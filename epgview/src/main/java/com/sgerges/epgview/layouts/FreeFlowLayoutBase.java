@@ -21,8 +21,6 @@ public abstract class FreeFlowLayoutBase implements FreeFlowLayout {
 	protected int width = -1;
 	protected int height = -1;
 	
-
-	
 	@Override
 	public void setDimensions(int measuredWidth, int measuredHeight) {
 		if (measuredHeight == height && measuredWidth == width) {

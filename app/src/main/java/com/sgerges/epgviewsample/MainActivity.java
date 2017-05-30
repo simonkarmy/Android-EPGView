@@ -2,6 +2,7 @@ package com.sgerges.epgviewsample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
             tv.setFocusable(false);
             tv.setBackgroundResource(R.drawable.channel_cell_bg);
             tv.setText(channel.getChannelName());
+            tv.setPadding(9,9,9,9);
             tv.setGravity(Gravity.CENTER);
+            tv.setEllipsize(TextUtils.TruncateAt.END);
             return tv;
         }
 
@@ -96,10 +99,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             tv.setFocusable(false);
+            tv.setPadding(9,9,9,9);
             tv.setBackgroundResource(R.drawable.program_cell_bg);
             String timings = dateFormat.format(new Date(program.getStartTime())) + " - " + dateFormat.format(new Date(program.getEndTime()));
             tv.setText(program.getTitle() + "\r\n" + timings);
-
+            tv.setEllipsize(TextUtils.TruncateAt.END);
             return tv;
         }
 

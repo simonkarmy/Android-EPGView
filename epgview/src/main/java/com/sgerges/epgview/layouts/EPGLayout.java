@@ -29,6 +29,9 @@ import java.util.Map;
 
 public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
+    public static final int TYPE_CHANNEL = 0;
+    public static final int TYPE_CELL = 1;
+
     private static final String TAG = "EPGLayout";
 
     private Map<Object, FreeFlowItem> proxies = new HashMap<>();
@@ -87,7 +90,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
                 header.frame = hframe;
                 header.data = s.getHeaderData();
-                header.type = TYPE_HEADER;
+                header.type = TYPE_CHANNEL;
                 proxies.put(header.data, header);
             }
 
@@ -145,22 +148,35 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     }
 
     /**
-     * NOTE: In this instance, we subtract/add the cellBufferSize (computed when
-     * item height is set, defaulted to 1 cell) to add a buffer of
-     * cellBufferSize to each end of the viewport
+     * This method it to decide which frames are going to be displayed.
      * <p>
+     *     That by comparing all cells frame with the current viewPort frame
+     *     If the cell frame is within the visible port, then display it.
+     *     <br/>
+     *     Also it keep in minds the cell type and will it stick Hor/Ver
      * {@inheritDoc}
      */
     @Override
     public Map<Object, FreeFlowItem> getItemProxies(int viewPortLeft, int viewPortTop) {
-        HashMap<Object, FreeFlowItem> desc = new HashMap<Object, FreeFlowItem>();
+        HashMap<Object, FreeFlowItem> desc = new HashMap<>();
         for (FreeFlowItem fd : proxies.values()) {
-            if (fd.frame.bottom > viewPortTop
-                    && fd.frame.top < viewPortTop + height
-                    && fd.frame.right > viewPortLeft
-                    && fd.frame.left < viewPortLeft + width) {
 
-                desc.put(fd.data, fd);
+            if(fd.type == TYPE_CHANNEL) {
+                //in case of channel cell only check visibility for Y index
+                //since in X index it will be always visible
+                if (fd.frame.bottom > viewPortTop
+                        && fd.frame.top < viewPortTop + height) {
+
+                    desc.put(fd.data, fd);
+                }
+            } else {
+                if (fd.frame.bottom > viewPortTop
+                        && fd.frame.top < viewPortTop + height
+                        && fd.frame.right > viewPortLeft
+                        && fd.frame.left < viewPortLeft + width) {
+
+                    desc.put(fd.data, fd);
+                }
             }
         }
 

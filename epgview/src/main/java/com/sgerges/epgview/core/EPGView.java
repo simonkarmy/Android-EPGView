@@ -37,6 +37,7 @@ import android.widget.OverScroller;
 
 import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.animations.FreeFlowLayoutAnimator;
+import com.sgerges.epgview.layouts.EPGLayout;
 import com.sgerges.epgview.layouts.FreeFlowLayout;
 import com.sgerges.epgview.utils.ViewUtils;
 
@@ -218,8 +219,8 @@ public class EPGView extends AbsLayoutContainer {
         int afterWidth = MeasureSpec.getSize(widthMeasureSpec);
         int afterHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-		int beforeWidth = getWidth();
-		int beforeHeight = getHeight();
+        int beforeWidth = getWidth();
+        int beforeHeight = getHeight();
 
         boolean sizeChanged = beforeWidth != afterWidth || beforeHeight != afterHeight;
 
@@ -300,7 +301,7 @@ public class EPGView extends AbsLayoutContainer {
      */
     protected void computeLayout(int w, int h, boolean sizeChanged) {
 
-        if(sizeChanged)
+        if (sizeChanged)
             mLayout.prepareLayout();
 
         if (shouldRecalculateScrollWhenComputingLayout) {
@@ -350,6 +351,7 @@ public class EPGView extends AbsLayoutContainer {
 
             if (freeflowItem.isHeader) {
                 view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
+                view.bringToFront();
             } else {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
             }
@@ -359,7 +361,11 @@ public class EPGView extends AbsLayoutContainer {
 
             freeflowItem.view = view;
             prepareViewForAddition(view, freeflowItem);
-            addView(view, getChildCount(), params);
+
+            //add headers to the end and the others to the start
+            //that to draw the headers on top of the normal cells
+            int index = freeflowItem.isHeader ? getChildCount() : 0;
+            addView(view, index, params);
         }
 
         view = freeflowItem.view;
@@ -394,15 +400,19 @@ public class EPGView extends AbsLayoutContainer {
         View view = freeflowItem.view;
         Rect frame = freeflowItem.frame;
 
+        int cellWidth = frame.width();
         //to make channel Sticky
         int viewLeft;
-        if(freeflowItem.type == FreeFlowLayout.TYPE_HEADER) {
+        int viewRight;
+        if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
             viewLeft = 0;
+            viewRight = cellWidth;
         } else {
             viewLeft = frame.left - viewPortX;
+            viewRight = frame.right - viewPortX;
         }
 
-        view.layout(viewLeft, frame.top - viewPortY, frame.right - viewPortX, frame.bottom - viewPortY);
+        view.layout(viewLeft, frame.top - viewPortY, viewRight, frame.bottom - viewPortY);
     }
 
     /**
@@ -653,9 +663,6 @@ public class EPGView extends AbsLayoutContainer {
 
                 FreeFlowItem old = oldFrames.remove(m.getKey());
                 freeflowItem.view = old.view;
-
-                // if (moveEvenIfSame || !old.compareRect(((FreeFlowItem)
-                // m.getValue()).frame)) {
 
                 if (moveEvenIfSame || !old.frame.equals(((FreeFlowItem) m.getValue()).frame)) {
 
@@ -1236,6 +1243,7 @@ public class EPGView extends AbsLayoutContainer {
         }
 
         for (FreeFlowItem freeflowItem : changeSet.removed) {
+
             removeViewInLayout(freeflowItem.view);
             returnItemToPoolIfNeeded(freeflowItem);
         }

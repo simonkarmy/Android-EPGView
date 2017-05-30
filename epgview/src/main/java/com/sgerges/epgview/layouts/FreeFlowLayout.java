@@ -29,9 +29,6 @@ import java.util.Map;
  */
 public interface FreeFlowLayout {
 
-	public static final int TYPE_HEADER = 0;
-	public static final int TYPE_CELL = 1;
-
 	/**
 	 * Called whenever Container's onMeasure is triggered Note: We don't support
 	 * margin and padding yet, so the dimensions are the entire actual of the
