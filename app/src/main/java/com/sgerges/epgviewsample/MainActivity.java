@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         protected View getViewForChannel(ChannelData channel, View convertView, ViewGroup parent) {
             TextView tv;
             if (convertView != null) {
-                // Log.d(TAG, "Convert view not null");
                 tv = (TextView) convertView;
             } else {
                 tv = new TextView(MainActivity.this);
@@ -92,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         protected View getViewForProgram(ProgramData program, View convertView, ViewGroup parent) {
             TextView tv;
             if (convertView != null) {
-                // Log.d(TAG, "Convert view not null");
                 tv = (TextView) convertView;
             } else {
                 tv = new TextView(MainActivity.this);

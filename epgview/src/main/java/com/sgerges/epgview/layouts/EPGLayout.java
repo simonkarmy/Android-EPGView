@@ -73,7 +73,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
         for (int sectionIndex = 0; sectionIndex < itemsAdapter.getNumberOfSections(); sectionIndex++) {
 
-            Section s = itemsAdapter.getSection(sectionIndex);
+            Section section = itemsAdapter.getSection(sectionIndex);
 
             if (itemsAdapter.shouldDisplaySectionHeaders()) {
 
@@ -89,13 +89,13 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 hframe.bottom = hframe.top + layoutParams.channelRowHeight;
 
                 header.frame = hframe;
-                header.data = s.getHeaderData();
+                header.data = section.getHeaderData();
                 header.type = TYPE_CHANNEL;
                 proxies.put(header.data, header);
             }
 
             int programsStart = layoutParams.channelCellWidth;
-            for (int programIndex = 0; programIndex < s.getDataCount(); programIndex++) {
+            for (int programIndex = 0; programIndex < section.getDataCount(); programIndex++) {
 
                 FreeFlowItem descriptor = new FreeFlowItem();
                 descriptor.itemSection = sectionIndex;
@@ -111,7 +111,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 int programEnd = frame.right;
 
                 descriptor.frame = frame;
-                descriptor.data = s.getDataAtIndex(programIndex);
+                descriptor.data = section.getDataAtIndex(programIndex);
                 proxies.put(descriptor.data, descriptor);
 
                 descriptor.type = TYPE_CELL;
