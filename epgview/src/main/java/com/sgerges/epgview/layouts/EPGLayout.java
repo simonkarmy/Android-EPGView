@@ -31,6 +31,8 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     public static final int TYPE_CHANNEL = 0;
     public static final int TYPE_CELL = 1;
+    public static final int TYPE_TIME_HEADER = 3;
+    public static final int TYPE_NOW_LINE = 2;
 
     private static final String TAG = "EPGLayout";
 
