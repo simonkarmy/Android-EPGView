@@ -349,11 +349,16 @@ public class EPGView extends AbsLayoutContainer {
 
             View convertView = viewpool.getViewFromPool(freeflowItem.type);
 
-            if (freeflowItem.isHeader) {
+            if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
                 view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
                 view.bringToFront();
-            } else {
+            } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
+            } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+                view = new View(getContext());
+                view.setBackgroundColor(0xFFFF0000);
+            } else {
+                view = new View(getContext());
             }
 
             if (view instanceof EPGView)
@@ -364,7 +369,7 @@ public class EPGView extends AbsLayoutContainer {
 
             //add headers to the end and the others to the start
             //that to draw the headers on top of the normal cells
-            int index = freeflowItem.isHeader ? getChildCount() : 0;
+            int index = freeflowItem.isHeader ||  freeflowItem.type == EPGLayout.TYPE_NOW_LINE ? getChildCount() : 0;
             addView(view, index, params);
         }
 
@@ -404,7 +409,10 @@ public class EPGView extends AbsLayoutContainer {
         //to make channel Sticky
         int viewLeft;
         int viewRight;
-        if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
+        if (freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+            viewLeft = frame.left - viewPortX;
+            viewRight = frame.right - viewPortX;
+        } else if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
             viewLeft = 0;
             viewRight = cellWidth;
         } else {
@@ -443,7 +451,6 @@ public class EPGView extends AbsLayoutContainer {
 
         logLifecycleEvent("Setting layout");
         requestLayout();
-
     }
 
     /**

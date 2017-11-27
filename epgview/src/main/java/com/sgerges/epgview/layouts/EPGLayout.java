@@ -73,6 +73,24 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         if (itemsAdapter == null)
             return;
 
+        int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
+
+        long viewStartTime = itemsAdapter.getViewStartTime();
+        if(viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
+            FreeFlowItem nowLineItem = new FreeFlowItem();
+            Rect nowLineFrame = new Rect();
+            nowLineFrame.top = 0;
+            nowLineFrame.left = programsStart + detectNowLeft();
+            nowLineFrame.right = nowLineFrame.left + 20;
+            nowLineFrame.bottom = itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+
+            nowLineItem.frame = nowLineFrame;
+            nowLineItem.type = TYPE_NOW_LINE;
+            nowLineItem.isHeader = true;
+            proxies.put("NOW_LINE", nowLineItem);
+        }
+
+
         for (int sectionIndex = 0; sectionIndex < itemsAdapter.getNumberOfSections(); sectionIndex++) {
 
             Section section = itemsAdapter.getSection(sectionIndex);
@@ -96,7 +114,6 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 proxies.put(header.data, header);
             }
 
-            int programsStart = layoutParams.channelCellWidth;
             for (int programIndex = 0; programIndex < section.getDataCount(); programIndex++) {
 
                 FreeFlowItem descriptor = new FreeFlowItem();
@@ -123,6 +140,12 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                     maxEnd = programEnd;
             }
         }
+    }
+
+    private int detectNowLeft() {
+
+        long viewStartTime = itemsAdapter.getViewStartTime();
+        return (int) (((System.currentTimeMillis() - viewStartTime) / DateUtils.MINUTE_IN_MILLIS) * layoutParams.minuteWidth);
     }
 
     private int detectProgramLeft(int section, int index) {
