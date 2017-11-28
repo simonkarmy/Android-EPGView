@@ -42,8 +42,10 @@ import com.sgerges.epgview.layouts.FreeFlowLayout;
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class EPGView extends AbsLayoutContainer {
@@ -52,6 +54,7 @@ public class EPGView extends AbsLayoutContainer {
 
     // ViewPool class
     protected ViewPool viewpool;
+    protected FreeFlowItem.ZIndexComparator zIndexComparator = new FreeFlowItem.ZIndexComparator();
 
     // Not used yet, but we'll probably need to
     // prevent layout in <code>layout()</code> method
@@ -369,8 +372,8 @@ public class EPGView extends AbsLayoutContainer {
 
             //add headers to the end and the others to the start
             //that to draw the headers on top of the normal cells
-            int index = freeflowItem.isHeader ||  freeflowItem.type == EPGLayout.TYPE_NOW_LINE ? getChildCount() : 0;
-            addView(view, index, params);
+//            int index = freeflowItem.isHeader ||  freeflowItem.type == EPGLayout.TYPE_NOW_LINE ? getChildCount() : 0;
+            addView(view);
         }
 
         view = freeflowItem.view;
@@ -421,6 +424,9 @@ public class EPGView extends AbsLayoutContainer {
         }
 
         view.layout(viewLeft, frame.top - viewPortY, viewRight, frame.bottom - viewPortY);
+        if(freeflowItem.zIndex > 0) {
+            view.bringToFront();
+        }
     }
 
     /**
@@ -590,7 +596,10 @@ public class EPGView extends AbsLayoutContainer {
             return;
         }
 
-        for (FreeFlowItem freeflowItem : changeSet.getAdded()) {
+        List<FreeFlowItem> added = changeSet.getAdded();
+        Collections.sort(added, zIndexComparator);
+
+        for (FreeFlowItem freeflowItem : added) {
             addAndMeasureViewIfNeeded(freeflowItem);
             doLayout(freeflowItem);
         }
@@ -1240,7 +1249,11 @@ public class EPGView extends AbsLayoutContainer {
 
         LayoutChangeSet changeSet = getViewChanges(oldFrames, frames, true);
 
-        for (FreeFlowItem freeflowItem : changeSet.added) {
+
+        List<FreeFlowItem> added = changeSet.added;
+        Collections.sort(added, zIndexComparator);
+
+        for (FreeFlowItem freeflowItem : added) {
             addAndMeasureViewIfNeeded(freeflowItem);
             doLayout(freeflowItem);
         }

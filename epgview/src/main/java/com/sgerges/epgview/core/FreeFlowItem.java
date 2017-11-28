@@ -19,11 +19,13 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.Comparator;
+
 public class FreeFlowItem {
 	public int itemIndex;
 	public int itemSection;
 	public Object data;
-	public boolean isHeader = false;
+	public int zIndex;
 	public Rect frame;
 	public View view;
 	public Bundle extras;
@@ -41,10 +43,18 @@ public class FreeFlowItem {
 		fd.itemSection = desc.itemSection;
 		fd.data = desc.data;
 		fd.frame = new Rect(desc.frame);
-		fd.isHeader = desc.isHeader;
+		fd.zIndex = desc.zIndex;
 		fd.view = desc.view;
 		fd.extras = desc.extras;
 		fd.type = desc.type;
 		return fd;
+	}
+
+	static class ZIndexComparator implements Comparator<FreeFlowItem> {
+
+		@Override
+		public int compare(FreeFlowItem o1, FreeFlowItem o2) {
+			return o1.zIndex - o2.zIndex;
+		}
 	}
 }

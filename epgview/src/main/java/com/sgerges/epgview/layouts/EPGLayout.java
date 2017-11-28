@@ -86,7 +86,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
             nowLineItem.frame = nowLineFrame;
             nowLineItem.type = TYPE_NOW_LINE;
-            nowLineItem.isHeader = true;
+            nowLineItem.zIndex = 1;
             proxies.put("NOW_LINE", nowLineItem);
         }
 
@@ -100,7 +100,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 FreeFlowItem header = new FreeFlowItem();
                 header.itemSection = sectionIndex;
                 header.itemIndex = -1;
-                header.isHeader = true;
+                header.zIndex = 2;
 
                 Rect hframe = new Rect();
                 hframe.left = 0;
@@ -131,6 +131,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
                 descriptor.frame = frame;
                 descriptor.data = section.getDataAtIndex(programIndex);
+                descriptor.zIndex = 0;
                 proxies.put(descriptor.data, descriptor);
 
                 descriptor.type = TYPE_CELL;
