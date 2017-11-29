@@ -20,7 +20,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -47,6 +49,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EPGView extends AbsLayoutContainer {
 
@@ -55,13 +59,14 @@ public class EPGView extends AbsLayoutContainer {
     // ViewPool class
     protected ViewPool viewpool;
     protected FreeFlowItem.ZIndexComparator zIndexComparator = new FreeFlowItem.ZIndexComparator();
+    protected Timer nowLineTimer;
 
     // Not used yet, but we'll probably need to
     // prevent layout in <code>layout()</code> method
     private boolean preventLayout = false;
 
     protected SectionedAdapter mAdapter;
-    protected FreeFlowLayout mLayout;
+    protected EPGLayout mLayout;
 
     /**
      * The X position of the active ViewPort
@@ -346,7 +351,7 @@ public class EPGView extends AbsLayoutContainer {
      * @param freeflowItem <code>FreeFlowItem</code> instance that determines the View
      *                     being positioned
      */
-    protected void addAndMeasureViewIfNeeded(FreeFlowItem freeflowItem) {
+    protected void addAndMeasureViewIfNeeded(final FreeFlowItem freeflowItem) {
         View view;
         if (freeflowItem.view == null) {
 
@@ -359,7 +364,7 @@ public class EPGView extends AbsLayoutContainer {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
                 view = new View(getContext());
-                view.setBackgroundColor(0xFFFF0000);
+                view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
             } else {
                 view = new View(getContext());
             }
@@ -381,6 +386,29 @@ public class EPGView extends AbsLayoutContainer {
         int widthSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.width(), MeasureSpec.EXACTLY);
         int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
         view.measure(widthSpec, heightSpec);
+
+        if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+            if(nowLineTimer != null) {
+                nowLineTimer.cancel();
+                nowLineTimer = null;
+            }
+
+            nowLineTimer = new Timer();
+            Log.d("TEST", "*************************************** START");
+            nowLineTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("TEST", "########################################## MOVE");
+                            freeflowItem.frame = mLayout.prepareNowLineFrame();
+                            doLayout(freeflowItem);
+                        }
+                    });
+                }
+            }, 0, DateUtils.MINUTE_IN_MILLIS);
+        }
     }
 
     /**
@@ -437,7 +465,7 @@ public class EPGView extends AbsLayoutContainer {
      * @param newLayout
      * @see FreeFlowLayout
      */
-    public void setLayout(FreeFlowLayout newLayout) {
+    public void setLayout(EPGLayout newLayout) {
         if (newLayout == mLayout || newLayout == null) {
             return;
         }
@@ -1264,6 +1292,13 @@ public class EPGView extends AbsLayoutContainer {
 
         for (FreeFlowItem freeflowItem : changeSet.removed) {
 
+            if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+                if(nowLineTimer != null) {
+                    Log.d("TEST", "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& CANCEL");
+                    nowLineTimer.cancel();
+                    nowLineTimer = null;
+                }
+            }
             removeViewInLayout(freeflowItem.view);
             returnItemToPoolIfNeeded(freeflowItem);
         }

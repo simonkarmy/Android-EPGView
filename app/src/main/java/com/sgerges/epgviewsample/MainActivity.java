@@ -44,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         epgView.requestFocus();
 
         EPGLayout epgLayout = new EPGLayout();
-        epgLayout.setLayoutParams(new EPGLayout.EPGLayoutParams(250, 250, 20));
+        EPGLayout.EPGLayoutParams params = new EPGLayout.EPGLayoutParams(250, 250, 20);
+        params.nowLineWidth = 10;
+        epgLayout.setLayoutParams(params);
         epgView.setLayout(epgLayout);
 
         epgView.setAdapter(new EPGDataAdapter(epgData));

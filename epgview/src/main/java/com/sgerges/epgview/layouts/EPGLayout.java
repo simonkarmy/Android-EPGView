@@ -66,6 +66,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             throw new IllegalArgumentException("EPGLayout can only use EPGLayoutParams");
     }
 
+    public EPGLayoutParams getLayoutParams() {
+        return layoutParams;
+    }
+
     public void prepareLayout() {
 
         proxies.clear();
@@ -78,13 +82,8 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         long viewStartTime = itemsAdapter.getViewStartTime();
         if(viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
             FreeFlowItem nowLineItem = new FreeFlowItem();
-            Rect nowLineFrame = new Rect();
-            nowLineFrame.top = 0;
-            nowLineFrame.left = programsStart + detectNowLeft();
-            nowLineFrame.right = nowLineFrame.left + 20;
-            nowLineFrame.bottom = itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
 
-            nowLineItem.frame = nowLineFrame;
+            nowLineItem.frame = prepareNowLineFrame();
             nowLineItem.type = TYPE_NOW_LINE;
             nowLineItem.zIndex = 1;
             proxies.put("NOW_LINE", nowLineItem);
@@ -141,6 +140,18 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                     maxEnd = programEnd;
             }
         }
+    }
+
+    public Rect prepareNowLineFrame() {
+
+        int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
+
+        Rect nowLineFrame = new Rect();
+        nowLineFrame.top = 0;
+        nowLineFrame.left = programsStart + detectNowLeft();
+        nowLineFrame.right = nowLineFrame.left + layoutParams.nowLineWidth;
+        nowLineFrame.bottom = itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        return nowLineFrame;
     }
 
     private int detectNowLeft() {
@@ -263,10 +274,12 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     }
 
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
-        private int channelCellWidth = 0;
-        private int channelRowHeight = 0;
-        private int minuteWidth = 0;
-        private boolean cutProgramsToEdges = true;
+        public int channelCellWidth = 0;
+        public int channelRowHeight = 0;
+        public int minuteWidth = 0;
+        public int nowLineWidth = 0;
+        public int nowLineColor = 0xFFFF0000;
+        public boolean cutProgramsToEdges = true;
 
         public EPGLayoutParams(int channelCellWidth, int channelRowHeight, int minuteWidth) {
             this.channelCellWidth = channelCellWidth;
