@@ -22,7 +22,6 @@ import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -394,14 +393,12 @@ public class EPGView extends AbsLayoutContainer {
             }
 
             nowLineTimer = new Timer();
-            Log.d("TEST", "*************************************** START");
             nowLineTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("TEST", "########################################## MOVE");
                             freeflowItem.frame = mLayout.prepareNowLineFrame();
                             doLayout(freeflowItem);
                         }
@@ -1294,7 +1291,6 @@ public class EPGView extends AbsLayoutContainer {
 
             if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
                 if(nowLineTimer != null) {
-                    Log.d("TEST", "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& CANCEL");
                     nowLineTimer.cancel();
                     nowLineTimer = null;
                 }
