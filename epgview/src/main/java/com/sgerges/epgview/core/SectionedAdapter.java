@@ -26,6 +26,8 @@ public interface SectionedAdapter {
 
 	View getHeaderViewForSection(int section, View convertView, ViewGroup parent);
 
+	View getViewForTimeCell(Long time, View convertView, ViewGroup parent);
+
 	int getNumberOfSections();
 
 	Section getSection(int index);

@@ -358,9 +358,11 @@ public class EPGView extends AbsLayoutContainer {
 
             if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
                 view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
-                view.bringToFront();
+//                view.bringToFront();
             } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
+            } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
+                view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
@@ -434,24 +436,38 @@ public class EPGView extends AbsLayoutContainer {
         Rect frame = freeflowItem.frame;
 
         int cellWidth = frame.width();
+        int cellHeight = frame.height();
         //to make channel Sticky
         int viewLeft;
         int viewRight;
+        int viewTop;
+        int viewBottom;
         if (freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
             viewLeft = frame.left - viewPortX;
             viewRight = frame.right - viewPortX;
+            viewTop = frame.top - viewPortY;
+            viewBottom = frame.bottom - viewPortY;
         } else if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
             viewLeft = 0;
             viewRight = cellWidth;
+            viewTop = frame.top - viewPortY;
+            viewBottom = frame.bottom - viewPortY;
+        } else if (freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
+            viewLeft = frame.left - viewPortX;
+            viewRight = frame.right - viewPortX;
+            viewTop = 0;
+            viewBottom = cellHeight;
         } else {
             viewLeft = frame.left - viewPortX;
             viewRight = frame.right - viewPortX;
+            viewTop = frame.top - viewPortY;
+            viewBottom = frame.bottom - viewPortY;
         }
 
-        view.layout(viewLeft, frame.top - viewPortY, viewRight, frame.bottom - viewPortY);
-        if(freeflowItem.zIndex > 0) {
-            view.bringToFront();
-        }
+        view.layout(viewLeft, viewTop, viewRight, viewBottom);
+//        if(freeflowItem.zIndex > 0) {
+//            view.bringToFront();
+//        }
     }
 
     /**
@@ -621,12 +637,21 @@ public class EPGView extends AbsLayoutContainer {
             return;
         }
 
-        List<FreeFlowItem> added = changeSet.getAdded();
-        Collections.sort(added, zIndexComparator);
+        List<FreeFlowItem> allVisible = new ArrayList<>();
 
-        for (FreeFlowItem freeflowItem : added) {
+        for (FreeFlowItem freeflowItem : changeSet.getAdded()) {
             addAndMeasureViewIfNeeded(freeflowItem);
             doLayout(freeflowItem);
+
+            //add non normal cell to bringToFrontViews
+            if(freeflowItem.zIndex > 0) {
+                allVisible.add(freeflowItem);
+            }
+        }
+
+        Collections.sort(allVisible, zIndexComparator);
+        for (FreeFlowItem freeFlowItem : allVisible) {
+            freeFlowItem.view.bringToFront();
         }
 
         if (isAnimatingChanges) {
@@ -1275,16 +1300,31 @@ public class EPGView extends AbsLayoutContainer {
         LayoutChangeSet changeSet = getViewChanges(oldFrames, frames, true);
 
 
-        List<FreeFlowItem> added = changeSet.added;
-        Collections.sort(added, zIndexComparator);
+        List<FreeFlowItem> allVisible = new ArrayList<>();
 
-        for (FreeFlowItem freeflowItem : added) {
+        for (FreeFlowItem freeflowItem : changeSet.added) {
             addAndMeasureViewIfNeeded(freeflowItem);
             doLayout(freeflowItem);
+
+            //add non normal cell to bringToFrontViews
+            if(freeflowItem.zIndex > 0) {
+                allVisible.add(freeflowItem);
+            }
         }
 
         for (Pair<FreeFlowItem, Rect> freeflowItemPair : changeSet.moved) {
-            doLayout(freeflowItemPair.first);
+            FreeFlowItem freeflowItem = freeflowItemPair.first;
+            doLayout(freeflowItem);
+
+            //add non normal cell to bringToFrontViews
+            if(freeflowItem.zIndex > 0) {
+                allVisible.add(freeflowItem);
+            }
+        }
+
+        Collections.sort(allVisible, zIndexComparator);
+        for (FreeFlowItem freeFlowItem : allVisible) {
+            freeFlowItem.view.bringToFront();
         }
 
         for (FreeFlowItem freeflowItem : changeSet.removed) {

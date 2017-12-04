@@ -70,6 +70,10 @@ public abstract class EPGAdapter<C, P> implements SectionedAdapter {
         return true;
     }
 
+    public boolean shouldDisplayTimeLine() {
+        return true;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Abstract Methods
     ///////////////////////////////////////////////////////////////////////////

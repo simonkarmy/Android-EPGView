@@ -43,7 +43,7 @@ public class MockDataProvider {
             channelData.setChannelName("Channel " + channelIndex);
             channelData.setChannelNumber(channelIndex);
 
-            long timeProgress = startOfToday + (random.nextInt(60) *60*1000);
+            long timeProgress = startOfToday;
 
             List<ProgramData> channelPrograms = new ArrayList<>();
             while (timeProgress < endOfToday) {

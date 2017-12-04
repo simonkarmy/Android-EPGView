@@ -108,6 +108,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public View getViewForTimeCell(Long time, View convertView, ViewGroup parent) {
+            TextView tv;
+            if (convertView != null) {
+                tv = (TextView) convertView;
+            } else {
+                tv = new TextView(MainActivity.this);
+            }
+
+            tv.setFocusable(false);
+            tv.setBackgroundResource(R.drawable.time_cell_bg);
+            tv.setText(dateFormat.format(new Date(time)));
+            tv.setTextColor(0xFFFFFFFF);
+            tv.setPadding(9,9,9,9);
+            tv.setGravity(Gravity.CENTER);
+            tv.setEllipsize(TextUtils.TruncateAt.END);
+            return tv;
+        }
+
+        @Override
         public long getStartTimeForProgramAt(int section, int position) {
             ProgramData program = getProgramAt(section, position);
             return program.getStartTime();

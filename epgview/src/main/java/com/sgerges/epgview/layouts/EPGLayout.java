@@ -24,6 +24,7 @@ import com.sgerges.epgview.core.Section;
 import com.sgerges.epgview.core.SectionedAdapter;
 import com.sgerges.epgview.utils.ViewUtils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     public static final int TYPE_CHANNEL = 0;
     public static final int TYPE_CELL = 1;
-    public static final int TYPE_TIME_HEADER = 3;
+    public static final int TYPE_TIME_BAR = 3;
     public static final int TYPE_NOW_LINE = 2;
 
     private static final String TAG = "EPGLayout";
@@ -78,8 +79,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             return;
 
         int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
-
+        int gridTop = itemsAdapter.shouldDisplayTimeLine() ? layoutParams.timeLineHeight : 0;
         long viewStartTime = itemsAdapter.getViewStartTime();
+
+        //========== Now line
         if(viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
             FreeFlowItem nowLineItem = new FreeFlowItem();
 
@@ -89,6 +92,40 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             proxies.put("NOW_LINE", nowLineItem);
         }
 
+        //========== Time Line
+
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.setTimeInMillis(viewStartTime);
+
+        //Make sure we are before the starting time by 1 hour, and at the head of the hour
+        currentTime.add(Calendar.HOUR_OF_DAY, -1);
+        currentTime.set(Calendar.MINUTE, 0);
+        currentTime.set(Calendar.SECOND, 0);
+        currentTime.set(Calendar.MILLISECOND, 0);
+
+        //Our cell should have the time Text in center
+        // to achieve that, the full cell will be 15 min before, 15 min after
+        while (currentTime.getTimeInMillis() < itemsAdapter.getViewEndTime()) {
+            FreeFlowItem timeCell = new FreeFlowItem();
+            timeCell.type = TYPE_TIME_BAR;
+            timeCell.zIndex = 3;
+
+            int timeDiffMin = (int) ((currentTime.getTimeInMillis() - viewStartTime)/DateUtils.MINUTE_IN_MILLIS);
+            Rect timeCellFrame = new Rect();
+            timeCellFrame.left = programsStart + (timeDiffMin * layoutParams.minuteWidth);
+            timeCellFrame.right = timeCellFrame.left + (30 * layoutParams.minuteWidth);//cell width is always 30 mins
+            timeCellFrame.top = 0;
+            timeCellFrame.bottom = timeCellFrame.top + layoutParams.timeLineHeight;
+
+            timeCell.frame = timeCellFrame;
+            timeCell.data = currentTime.getTimeInMillis();
+
+            proxies.put(currentTime.getTimeInMillis(), timeCell);
+
+            currentTime.add(Calendar.MINUTE, 30);
+        }
+
+        //========= Channels Headers
 
         for (int sectionIndex = 0; sectionIndex < itemsAdapter.getNumberOfSections(); sectionIndex++) {
 
@@ -104,7 +141,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 Rect hframe = new Rect();
                 hframe.left = 0;
                 hframe.right = layoutParams.channelCellWidth;
-                hframe.top = sectionIndex * layoutParams.channelRowHeight;
+                hframe.top = gridTop + (sectionIndex * layoutParams.channelRowHeight);
                 hframe.bottom = hframe.top + layoutParams.channelRowHeight;
 
                 header.frame = hframe;
@@ -112,6 +149,8 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 header.type = TYPE_CHANNEL;
                 proxies.put(header.data, header);
             }
+
+            //========= Programs Rows
 
             for (int programIndex = 0; programIndex < section.getDataCount(); programIndex++) {
 
@@ -123,7 +162,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 frame.left = programsStart + detectProgramLeft(sectionIndex, programIndex);
                 frame.right = programsStart + detectProgramRight(sectionIndex, programIndex);
 
-                frame.top = sectionIndex * layoutParams.channelRowHeight;
+                frame.top = gridTop + (sectionIndex * layoutParams.channelRowHeight);
                 frame.bottom = frame.top + layoutParams.channelRowHeight;
 
                 int programEnd = frame.right;
@@ -201,9 +240,13 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             if(fd.type == TYPE_CHANNEL) {
                 //in case of channel cell only check visibility for Y index
                 //since in X index it will be always visible
-                if (fd.frame.bottom > viewPortTop
-                        && fd.frame.top < viewPortTop + height) {
-
+                if (fd.frame.bottom > viewPortTop && fd.frame.top < viewPortTop + height) {
+                    desc.put(fd.data, fd);
+                }
+            } else if(fd.type == TYPE_TIME_BAR) {
+                //in case of Time bar cell only check visibility for X index
+                //since in Y index it will be always visible on top
+                if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
                     desc.put(fd.data, fd);
                 }
             } else {
@@ -279,6 +322,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         public int minuteWidth = 0;
         public int nowLineWidth = 0;
         public int nowLineColor = 0xFFFF0000;
+        public int timeLineHeight = 150;
         public boolean cutProgramsToEdges = true;
 
         public EPGLayoutParams(int channelCellWidth, int channelRowHeight, int minuteWidth) {
