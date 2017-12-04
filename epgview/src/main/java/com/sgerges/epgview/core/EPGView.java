@@ -210,7 +210,7 @@ public class EPGView extends AbsLayoutContainer {
         maxFlingVelocity = configuration.getScaledMaximumFlingVelocity();
         minFlingVelocity = configuration.getScaledMinimumFlingVelocity();
         overFlingDistance = configuration.getScaledOverflingDistance();
-        touchSlop = configuration.getScaledTouchSlop();
+        touchSlop = 1; //TODO check this again
 
         scroller = new OverScroller(context);
 

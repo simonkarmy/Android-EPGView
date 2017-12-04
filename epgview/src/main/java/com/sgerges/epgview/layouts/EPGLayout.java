@@ -103,14 +103,14 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         currentTime.set(Calendar.SECOND, 0);
         currentTime.set(Calendar.MILLISECOND, 0);
 
-        //Our cell should have the time Text in center
-        // to achieve that, the full cell will be 15 min before, 15 min after
         while (currentTime.getTimeInMillis() < itemsAdapter.getViewEndTime()) {
             FreeFlowItem timeCell = new FreeFlowItem();
             timeCell.type = TYPE_TIME_BAR;
             timeCell.zIndex = 3;
 
-            int timeDiffMin = (int) ((currentTime.getTimeInMillis() - viewStartTime)/DateUtils.MINUTE_IN_MILLIS);
+            //Our cell should have the time Text in center
+            // to achieve that, the full cell will be 15 min before, 15 min after
+            int timeDiffMin = (int) ((currentTime.getTimeInMillis() - viewStartTime)/DateUtils.MINUTE_IN_MILLIS) - 15;
             Rect timeCellFrame = new Rect();
             timeCellFrame.left = programsStart + (timeDiffMin * layoutParams.minuteWidth);
             timeCellFrame.right = timeCellFrame.left + (30 * layoutParams.minuteWidth);//cell width is always 30 mins
