@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.ActionMode;
@@ -49,7 +48,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class EPGView extends AbsLayoutContainer {
 
@@ -358,11 +356,13 @@ public class EPGView extends AbsLayoutContainer {
 
             if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
                 view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
-//                view.bringToFront();
             } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
                 view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
+            } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
+                view = new View(getContext());
+                view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
             } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
@@ -376,9 +376,6 @@ public class EPGView extends AbsLayoutContainer {
             freeflowItem.view = view;
             prepareViewForAddition(view, freeflowItem);
 
-            //add headers to the end and the others to the start
-            //that to draw the headers on top of the normal cells
-//            int index = freeflowItem.isHeader ||  freeflowItem.type == EPGLayout.TYPE_NOW_LINE ? getChildCount() : 0;
             addView(view);
         }
 
@@ -388,26 +385,26 @@ public class EPGView extends AbsLayoutContainer {
         int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
         view.measure(widthSpec, heightSpec);
 
-        if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
-            if(nowLineTimer != null) {
-                nowLineTimer.cancel();
-                nowLineTimer = null;
-            }
-
-            nowLineTimer = new Timer();
-            nowLineTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            freeflowItem.frame = mLayout.prepareNowLineFrame();
-                            doLayout(freeflowItem);
-                        }
-                    });
-                }
-            }, 0, DateUtils.MINUTE_IN_MILLIS);
-        }
+//        if(freeflowItem.isMovingByTime()) {
+//            if(nowLineTimer != null) {
+//                nowLineTimer.cancel();
+//                nowLineTimer = null;
+//            }
+//
+//            nowLineTimer = new Timer();
+//            nowLineTimer.schedule(new TimerTask() {
+//                @Override
+//                public void run() {
+//                    post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            freeflowItem.frame = mLayout.prepareNowLineFrame();
+//                            doLayout(freeflowItem);
+//                        }
+//                    });
+//                }
+//            }, 0, DateUtils.MINUTE_IN_MILLIS);
+//        }
     }
 
     /**
@@ -452,6 +449,11 @@ public class EPGView extends AbsLayoutContainer {
             viewRight = cellWidth;
             viewTop = frame.top - viewPortY;
             viewBottom = frame.bottom - viewPortY;
+        } else if (freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
+            viewLeft = frame.left - viewPortX;
+            viewRight = frame.right - viewPortX;
+            viewTop = 0;
+            viewBottom = cellHeight;
         } else if (freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
             viewLeft = frame.left - viewPortX;
             viewRight = frame.right - viewPortX;
@@ -465,9 +467,6 @@ public class EPGView extends AbsLayoutContainer {
         }
 
         view.layout(viewLeft, viewTop, viewRight, viewBottom);
-//        if(freeflowItem.zIndex > 0) {
-//            view.bringToFront();
-//        }
     }
 
     /**
@@ -1329,12 +1328,12 @@ public class EPGView extends AbsLayoutContainer {
 
         for (FreeFlowItem freeflowItem : changeSet.removed) {
 
-            if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
-                if(nowLineTimer != null) {
-                    nowLineTimer.cancel();
-                    nowLineTimer = null;
-                }
-            }
+//            if(freeflowItem.isMovingByTime()) {
+//                if(nowLineTimer != null) {
+//                    nowLineTimer.cancel();
+//                    nowLineTimer = null;
+//                }
+//            }
             removeViewInLayout(freeflowItem.view);
             returnItemToPoolIfNeeded(freeflowItem);
         }
@@ -1818,8 +1817,7 @@ public class EPGView extends AbsLayoutContainer {
         Iterator<?> it = frames.entrySet().iterator();
         View child = null;
         while (it.hasNext()) {
-            Map.Entry<?, FreeFlowItem> pairs = (Map.Entry<?, FreeFlowItem>) it
-                    .next();
+            Map.Entry<?, FreeFlowItem> pairs = (Map.Entry<?, FreeFlowItem>) it.next();
             child = pairs.getValue().view;
             boolean isChecked = isChecked(pairs.getValue().itemSection,
                     pairs.getValue().itemIndex);
@@ -1886,8 +1884,7 @@ public class EPGView extends AbsLayoutContainer {
             return;
         }
 
-        FreeFlowItem freeflowItem = mLayout.getFreeFlowItemForItem(section
-                .getDataAtIndex(itemIndex));
+        FreeFlowItem freeflowItem = mLayout.getFreeFlowItemForItem(section.getDataAtIndex(itemIndex));
         freeflowItem = FreeFlowItem.clone(freeflowItem);
 
         int newVPX = freeflowItem.frame.left;
@@ -1900,8 +1897,7 @@ public class EPGView extends AbsLayoutContainer {
             newVPY = mLayout.getContentHeight() - getMeasuredHeight();
 
         if (animate) {
-            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX),
-                    (newVPY - viewPortY), 1500);
+            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX), (newVPY - viewPortY), 1500);
             post(flingRunnable);
         } else {
             moveViewportBy((viewPortX - newVPX), (viewPortY - newVPY), false);

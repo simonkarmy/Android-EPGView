@@ -16,7 +16,6 @@
 package com.sgerges.epgview.core;
 
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.view.View;
 
 import java.util.Comparator;
@@ -28,7 +27,6 @@ public class FreeFlowItem {
 	public int zIndex;
 	public Rect frame;
 	public View view;
-	public Bundle extras;
 	public int type;
 
     public FreeFlowItem() {
@@ -45,10 +43,13 @@ public class FreeFlowItem {
 		fd.frame = new Rect(desc.frame);
 		fd.zIndex = desc.zIndex;
 		fd.view = desc.view;
-		fd.extras = desc.extras;
 		fd.type = desc.type;
 		return fd;
 	}
+
+//	public boolean isMovingByTime() {
+//		return type == EPGLayout.TYPE_NOW_LINE || type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD;
+//	}
 
 	static class ZIndexComparator implements Comparator<FreeFlowItem> {
 

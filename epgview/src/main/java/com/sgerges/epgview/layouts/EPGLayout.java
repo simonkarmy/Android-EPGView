@@ -32,8 +32,9 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     public static final int TYPE_CHANNEL = 0;
     public static final int TYPE_CELL = 1;
-    public static final int TYPE_TIME_BAR = 3;
     public static final int TYPE_NOW_LINE = 2;
+    public static final int TYPE_TIME_BAR = 3;
+    public static final int TYPE_TIME_BAR_NOW_HEAD = 4;
 
     private static final String TAG = "EPGLayout";
 
@@ -45,6 +46,8 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     //to calculate the total end of the view
     private int maxEnd;
+
+    private int gridTop = 0;
 
     public EPGLayout() {
         layoutParams = new EPGLayoutParams(250, 250, 20);
@@ -78,18 +81,26 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         if (itemsAdapter == null)
             return;
 
+        gridTop = itemsAdapter.shouldDisplayTimeLine() ? layoutParams.timeLineHeight : 0;
         int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
-        int gridTop = itemsAdapter.shouldDisplayTimeLine() ? layoutParams.timeLineHeight : 0;
         long viewStartTime = itemsAdapter.getViewStartTime();
 
-        //========== Now line
+        //========== Now line & Now Head
         if(viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
-            FreeFlowItem nowLineItem = new FreeFlowItem();
 
+            FreeFlowItem nowLineItem = new FreeFlowItem();
             nowLineItem.frame = prepareNowLineFrame();
             nowLineItem.type = TYPE_NOW_LINE;
             nowLineItem.zIndex = 1;
+            nowLineItem.data = "NOW_LINE";
             proxies.put("NOW_LINE", nowLineItem);
+
+            FreeFlowItem nowHeadItem = new FreeFlowItem();
+            nowHeadItem.frame = prepareNowHeadFrame();
+            nowHeadItem.type = TYPE_TIME_BAR_NOW_HEAD;
+            nowHeadItem.zIndex = 4;
+            nowHeadItem.data = "NOW_HEAD";
+            proxies.put("NOW_HEAD", nowHeadItem);
         }
 
         //========== Time Line
@@ -103,7 +114,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         currentTime.set(Calendar.SECOND, 0);
         currentTime.set(Calendar.MILLISECOND, 0);
 
-        while (currentTime.getTimeInMillis() < itemsAdapter.getViewEndTime()) {
+        while (currentTime.getTimeInMillis() - (30 * DateUtils.MINUTE_IN_MILLIS) < itemsAdapter.getViewEndTime()) {
             FreeFlowItem timeCell = new FreeFlowItem();
             timeCell.type = TYPE_TIME_BAR;
             timeCell.zIndex = 3;
@@ -186,10 +197,22 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
 
         Rect nowLineFrame = new Rect();
-        nowLineFrame.top = 0;
+        nowLineFrame.top = gridTop;
         nowLineFrame.left = programsStart + detectNowLeft();
         nowLineFrame.right = nowLineFrame.left + layoutParams.nowLineWidth;
-        nowLineFrame.bottom = itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        nowLineFrame.bottom = nowLineFrame.top + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        return nowLineFrame;
+    }
+
+    public Rect prepareNowHeadFrame() {
+
+        int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
+
+        Rect nowLineFrame = new Rect();
+        nowLineFrame.top = 0;
+        nowLineFrame.left = programsStart + detectNowLeft();
+        nowLineFrame.right = nowLineFrame.left + 100;
+        nowLineFrame.bottom = nowLineFrame.top + layoutParams.timeLineHeight;
         return nowLineFrame;
     }
 
@@ -235,12 +258,19 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     @Override
     public Map<Object, FreeFlowItem> getItemProxies(int viewPortLeft, int viewPortTop) {
         HashMap<Object, FreeFlowItem> desc = new HashMap<>();
+        FreeFlowItem temp = proxies.get("NOW_LINE");
         for (FreeFlowItem fd : proxies.values()) {
 
             if(fd.type == TYPE_CHANNEL) {
                 //in case of channel cell only check visibility for Y index
                 //since in X index it will be always visible
                 if (fd.frame.bottom > viewPortTop && fd.frame.top < viewPortTop + height) {
+                    desc.put(fd.data, fd);
+                }
+            } else if(fd.type == TYPE_TIME_BAR_NOW_HEAD) {
+                //in case of Time bar cell only check visibility for X index
+                //since in Y index it will be always visible on top
+                if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
                     desc.put(fd.data, fd);
                 }
             } else if(fd.type == TYPE_TIME_BAR) {
