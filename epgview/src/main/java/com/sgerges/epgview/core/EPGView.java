@@ -213,6 +213,28 @@ public class EPGView extends AbsLayoutContainer {
         scroller = new OverScroller(context);
 
         setEdgeEffectsEnabled(true);
+
+        setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AbsLayoutContainer parent, FreeFlowItem proxy) {
+
+                if(mOnEPGItemSelectedListener == null) {
+                    return;
+                }
+
+                if(proxy.type == EPGLayout.TYPE_CELL) {
+                    mOnEPGItemSelectedListener.onProgramItemSelected(EPGView.this, proxy.itemSection, proxy.itemIndex);
+                } else if(proxy.type == EPGLayout.TYPE_CHANNEL) {
+                    mOnEPGItemSelectedListener.onChannelItemSelected(EPGView.this, proxy.itemSection);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AbsLayoutContainer parent) {
+
+            }
+        });
     }
 
     @Override
@@ -952,6 +974,18 @@ public class EPGView extends AbsLayoutContainer {
                 (int) (viewPortX + event.getX()),
                 (int) (viewPortY + event.getY()));
 
+        //May be user clicked on A channel, which will be detected from real click location.
+        //without dividing the viewPortX & viewPortY
+        //So if the click item has a zIndex more than the clicked program, then consider it clicked
+        FreeFlowItem screenEndTouchAt = ViewUtils.getItemAt(frames,
+                (int) (event.getX()),
+                (int) (viewPortY + event.getY()));
+
+        if(screenEndTouchAt != null && screenEndTouchAt.zIndex > beginTouchAt.zIndex) {
+            beginTouchAt = screenEndTouchAt;
+        }
+
+
         lastTouchX = event.getX();
         lastTouchY = event.getY();
 
@@ -1117,6 +1151,17 @@ public class EPGView extends AbsLayoutContainer {
                     (int) (viewPortX + event.getX()),
                     (int) (viewPortY + event.getY()));
 
+            //May be user clicked on A channel, which will be detected from real click location.
+            //without dividing the viewPortX & viewPortY
+            //So if the click item has a zIndex more than the clicked program, then consider it clicked
+            FreeFlowItem screenEndTouchAt = ViewUtils.getItemAt(frames,
+                    (int) (event.getX()),
+                    (int) (viewPortY + event.getY()));
+
+            if(screenEndTouchAt != null && screenEndTouchAt.zIndex > endTouchAt.zIndex) {
+                endTouchAt = screenEndTouchAt;
+            }
+
             if (beginTouchAt != null && beginTouchAt.view != null && beginTouchAt == endTouchAt) {
 
                 beginTouchAt.view.setPressed(true);
@@ -1135,11 +1180,8 @@ public class EPGView extends AbsLayoutContainer {
                         if (beginTouchAt != null && beginTouchAt.view != null) {
                             beginTouchAt.view.setPressed(false);
                         }
-                        if (mChoiceActionMode == null
-                                && mOnItemSelectedListener != null) {
-                            mOnItemSelectedListener.onItemSelected(
-                                    EPGView.this,
-                                    selectedFreeFlowItem);
+                        if (mChoiceActionMode == null && mOnItemSelectedListener != null) {
+                            mOnItemSelectedListener.onItemSelected(EPGView.this, selectedFreeFlowItem);
                         }
                     }
                 };
@@ -1297,7 +1339,6 @@ public class EPGView extends AbsLayoutContainer {
         copyFrames(mLayout.getItemProxies(viewPortX, viewPortY), frames);
 
         LayoutChangeSet changeSet = getViewChanges(oldFrames, frames, true);
-
 
         List<FreeFlowItem> allVisible = new ArrayList<>();
 
@@ -1972,4 +2013,53 @@ public class EPGView extends AbsLayoutContainer {
         // }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // OnEPGItemSelectedListener
+    ///////////////////////////////////////////////////////////////////////////
+
+    private OnEPGItemSelectedListener mOnEPGItemSelectedListener;
+
+    /**
+     * Interface definition for a callback to be invoked when an EPG item in this
+     * view has been selected.
+     */
+    public interface OnEPGItemSelectedListener {
+        /**
+         * <p>
+         * Callback method to be invoked when an item in this view has been clicked
+         * </p>
+         *
+         * @param parent
+         *            The AdapterView where the selection happened
+         * @param channelIndex
+         *            The Index of the channel row
+         * @param programIndex
+         *            The Index for the program has been clicked
+         *
+         */
+        void onProgramItemSelected(AbsLayoutContainer parent, int channelIndex, int programIndex);
+
+        /**
+         * <p>
+         * Callback method to be invoked when an item in this view has been clicked
+         * </p>
+         *
+         * @param parent
+         *            The AdapterView where the selection happened
+         * @param channelIndex
+         *            The Index of the channel row
+         */
+        void onChannelItemSelected(AbsLayoutContainer parent, int channelIndex);
+    }
+
+    /**
+     * Register a callback to be invoked when an item in this EPGView has
+     * been selected.
+     *
+     * @param listener
+     *            The callback that will run
+     */
+    public void setmOnEPGItemSelectedListener(OnEPGItemSelectedListener listener) {
+        this.mOnEPGItemSelectedListener = listener;
+    }
 }

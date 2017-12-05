@@ -13,7 +13,6 @@ import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.core.AbsLayoutContainer;
 import com.sgerges.epgview.core.EPGAdapter;
 import com.sgerges.epgview.core.EPGView;
-import com.sgerges.epgview.core.FreeFlowItem;
 import com.sgerges.epgview.layouts.EPGLayout;
 import com.sgerges.epgviewsample.model.ChannelData;
 import com.sgerges.epgviewsample.model.MockDataProvider;
@@ -50,15 +49,15 @@ public class MainActivity extends AppCompatActivity {
         epgView.setLayout(epgLayout);
 
         epgView.setAdapter(new EPGDataAdapter(epgData));
-        epgView.setOnItemSelectedListener(new AbsLayoutContainer.OnItemSelectedListener() {
+        epgView.setmOnEPGItemSelectedListener(new EPGView.OnEPGItemSelectedListener() {
             @Override
-            public void onItemSelected(AbsLayoutContainer parent, FreeFlowItem proxy) {
-                Toast.makeText(MainActivity.this, "Item Clicked section=" + proxy.itemSection + ", index=" + proxy.itemIndex, Toast.LENGTH_SHORT).show();
+            public void onProgramItemSelected(AbsLayoutContainer parent, int channelIndex, int programIndex) {
+                Toast.makeText(MainActivity.this, "Program Clicked channel=" + channelIndex + ", program=" + programIndex, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onNothingSelected(AbsLayoutContainer parent) {
-
+            public void onChannelItemSelected(AbsLayoutContainer parent, int channelIndex) {
+                Toast.makeText(MainActivity.this, "Channel Clicked channel=" + channelIndex, Toast.LENGTH_SHORT).show();
             }
         });
     }

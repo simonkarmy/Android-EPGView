@@ -258,7 +258,6 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     @Override
     public Map<Object, FreeFlowItem> getItemProxies(int viewPortLeft, int viewPortTop) {
         HashMap<Object, FreeFlowItem> desc = new HashMap<>();
-        FreeFlowItem temp = proxies.get("NOW_LINE");
         for (FreeFlowItem fd : proxies.values()) {
 
             if(fd.type == TYPE_CHANNEL) {

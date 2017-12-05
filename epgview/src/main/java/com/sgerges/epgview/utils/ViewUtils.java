@@ -31,11 +31,17 @@ public class ViewUtils {
 	public static FreeFlowItem getItemAt(Map<?, FreeFlowItem> frameDescriptors, int x, int y){
         FreeFlowItem returnValue = null;
 
+        int maxZIndex = 0;
 		for(FreeFlowItem item : frameDescriptors.values()) {
-			if(item.frame.contains((int)x, (int)y)) {
-                returnValue =  item;
+			if(item.frame.contains(x, y)) {
+
+				//Only return item with max xIndex, because may be 2 cells are on top of each others
+				if(returnValue == null || item.zIndex > maxZIndex) {
+					returnValue = item;
+					maxZIndex = item.zIndex;
+				}
             }
-	      
+
 	    }
 		return returnValue;
 	}

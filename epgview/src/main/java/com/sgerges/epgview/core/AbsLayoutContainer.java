@@ -157,19 +157,15 @@ public abstract class AbsLayoutContainer extends ViewGroup {
 		void onNothingSelected(AbsLayoutContainer parent);
 	}
 
-	/**
+    /**
 	 * Register a callback to be invoked when an item in this AdapterView has
 	 * been selected.
 	 * 
 	 * @param listener
 	 *            The callback that will run
 	 */
-	public void setOnItemSelectedListener(OnItemSelectedListener listener) {
+	protected void setOnItemSelectedListener(OnItemSelectedListener listener) {
 		mOnItemSelectedListener = listener;
-	}
-
-	public final OnItemSelectedListener getOnItemSelectedListener() {
-		return mOnItemSelectedListener;
 	}
 
 	public void addFreeFlowEventListener(FreeFlowEventListener listener) {
