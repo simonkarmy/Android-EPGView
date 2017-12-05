@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.ActionMode;
@@ -48,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class EPGView extends AbsLayoutContainer {
 
@@ -235,6 +237,19 @@ public class EPGView extends AbsLayoutContainer {
 
             }
         });
+
+        nowLineTimer = new Timer();
+        nowLineTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestLayout();
+                    }
+                });
+            }
+        }, DateUtils.MINUTE_IN_MILLIS, DateUtils.MINUTE_IN_MILLIS);
     }
 
     @Override
@@ -347,6 +362,16 @@ public class EPGView extends AbsLayoutContainer {
 
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if(nowLineTimer != null) {
+            nowLineTimer.cancel();
+            nowLineTimer = null;
+        }
+    }
+
     /**
      * Copies the frames from one Map into another. The items are
      * cloned cause we modify the rectangles of the items as they are moving
@@ -406,27 +431,6 @@ public class EPGView extends AbsLayoutContainer {
         int widthSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.width(), MeasureSpec.EXACTLY);
         int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
         view.measure(widthSpec, heightSpec);
-
-//        if(freeflowItem.isMovingByTime()) {
-//            if(nowLineTimer != null) {
-//                nowLineTimer.cancel();
-//                nowLineTimer = null;
-//            }
-//
-//            nowLineTimer = new Timer();
-//            nowLineTimer.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            freeflowItem.frame = mLayout.prepareNowLineFrame();
-//                            doLayout(freeflowItem);
-//                        }
-//                    });
-//                }
-//            }, 0, DateUtils.MINUTE_IN_MILLIS);
-//        }
     }
 
     /**
@@ -1369,12 +1373,6 @@ public class EPGView extends AbsLayoutContainer {
 
         for (FreeFlowItem freeflowItem : changeSet.removed) {
 
-//            if(freeflowItem.isMovingByTime()) {
-//                if(nowLineTimer != null) {
-//                    nowLineTimer.cancel();
-//                    nowLineTimer = null;
-//                }
-//            }
             removeViewInLayout(freeflowItem.view);
             returnItemToPoolIfNeeded(freeflowItem);
         }
