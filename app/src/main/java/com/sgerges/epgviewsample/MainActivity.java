@@ -13,7 +13,6 @@ import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.core.AbsLayoutContainer;
 import com.sgerges.epgview.core.EPGAdapter;
 import com.sgerges.epgview.core.EPGView;
-import com.sgerges.epgview.layouts.EPGLayout;
 import com.sgerges.epgviewsample.model.ChannelData;
 import com.sgerges.epgviewsample.model.MockDataProvider;
 import com.sgerges.epgviewsample.model.ProgramData;
@@ -41,12 +40,6 @@ public class MainActivity extends AppCompatActivity {
         anim.animateIndividualCellsSequentially = false;
 
         epgView.requestFocus();
-
-        EPGLayout epgLayout = new EPGLayout();
-        EPGLayout.EPGLayoutParams params = new EPGLayout.EPGLayoutParams(250, 250, 20);
-        params.nowLineWidth = 10;
-        epgLayout.setLayoutParams(params);
-        epgView.setLayout(epgLayout);
 
         epgView.setAdapter(new EPGDataAdapter(epgData));
         epgView.setmOnEPGItemSelectedListener(new EPGView.OnEPGItemSelectedListener() {

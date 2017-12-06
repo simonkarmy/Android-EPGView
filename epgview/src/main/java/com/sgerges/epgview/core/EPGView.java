@@ -238,6 +238,12 @@ public class EPGView extends AbsLayoutContainer {
             }
         });
 
+        EPGLayout epgLayout = new EPGLayout();
+        EPGLayout.EPGLayoutParams params = new EPGLayout.EPGLayoutParams(250, 250, 20);
+        params.nowLineWidth = 10;
+        epgLayout.setLayoutParams(params);
+        setLayout(epgLayout);
+
         nowLineTimer = new Timer();
         nowLineTimer.schedule(new TimerTask() {
             @Override
@@ -503,7 +509,7 @@ public class EPGView extends AbsLayoutContainer {
      * @param newLayout
      * @see FreeFlowLayout
      */
-    public void setLayout(EPGLayout newLayout) {
+    private void setLayout(EPGLayout newLayout) {
         if (newLayout == mLayout || newLayout == null) {
             return;
         }
@@ -562,13 +568,6 @@ public class EPGView extends AbsLayoutContainer {
             removeCallbacks(mPerformClick);
             mPerformClick = null;
         }
-    }
-
-    /**
-     * @return The layout currently applied to the Container
-     */
-    public FreeFlowLayout getLayout() {
-        return mLayout;
     }
 
     /**
@@ -809,10 +808,6 @@ public class EPGView extends AbsLayoutContainer {
             mLayout.setAdapter(mAdapter);
         }
         requestLayout();
-    }
-
-    public FreeFlowLayout getLayoutController() {
-        return mLayout;
     }
 
     /**
