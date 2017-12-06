@@ -36,20 +36,20 @@ public abstract class AbsLayoutContainer extends ViewGroup {
 
 	public AbsLayoutContainer(Context context) {
 		super(context);
-		init(context);
+		init(context, null, 0);
 	}
 
 	public AbsLayoutContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init(context);
+		init(context, attrs, 0);
 	}
 
 	public AbsLayoutContainer(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init(context);
+		init(context,attrs, defStyle);
 	}
 
-	protected abstract void init(Context c);
+	protected abstract void init(Context c, AttributeSet attrs, int defStyle);
 
 	// //////////////////CLICK BEHAVIOR //////
 	protected FreeFlowItem selectedFreeFlowItem;

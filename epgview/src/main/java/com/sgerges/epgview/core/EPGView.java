@@ -16,6 +16,7 @@
 package com.sgerges.epgview.core;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v4.util.SimpleArrayMap;
@@ -36,6 +37,7 @@ import android.widget.Checkable;
 import android.widget.EdgeEffect;
 import android.widget.OverScroller;
 
+import com.sgerges.epgview.R;
 import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.animations.FreeFlowLayoutAnimator;
 import com.sgerges.epgview.layouts.EPGLayout;
@@ -201,7 +203,7 @@ public class EPGView extends AbsLayoutContainer {
     }
 
     @Override
-    protected void init(Context context) {
+    protected void init(Context context, AttributeSet attrs, int defStyle) {
 
         viewpool = new ViewPool();
         frames = new HashMap<>();
@@ -239,9 +241,20 @@ public class EPGView extends AbsLayoutContainer {
         });
 
         EPGLayout epgLayout = new EPGLayout();
-        EPGLayout.EPGLayoutParams params = new EPGLayout.EPGLayoutParams(250, 250, 20);
-        params.nowLineWidth = 10;
-        epgLayout.setLayoutParams(params);
+        EPGLayout.EPGLayoutParams layoutParams = epgLayout.getLayoutParams();
+
+        //Read from xml attrs styles
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EPGView, defStyle, 0);
+
+        layoutParams.channelCellWidth = a.getDimensionPixelSize(R.styleable.EPGView_epg_channelCellWidth, layoutParams.channelCellWidth);
+        layoutParams.channelRowHeight = a.getDimensionPixelSize(R.styleable.EPGView_epg_channelRowHeight, layoutParams.channelRowHeight);
+        layoutParams.minuteWidth = a.getDimensionPixelSize(R.styleable.EPGView_epg_minuteWidth, layoutParams.minuteWidth);
+        layoutParams.nowLineWidth = a.getDimensionPixelSize(R.styleable.EPGView_epg_nowLineThickness, layoutParams.nowLineWidth);
+        layoutParams.nowLineColor = a.getColor(R.styleable.EPGView_epg_nowLineColor, layoutParams.nowLineColor);
+        layoutParams.timeLineHeight = a.getDimensionPixelSize(R.styleable.EPGView_epg_timeLineHeight, layoutParams.timeLineHeight);
+
+        a.recycle();
+
         setLayout(epgLayout);
 
         nowLineTimer = new Timer();

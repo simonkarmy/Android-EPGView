@@ -50,7 +50,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     private int gridTop = 0;
 
     public EPGLayout() {
-        layoutParams = new EPGLayoutParams(250, 250, 20);
+        layoutParams = new EPGLayoutParams();
     }
 
     @Override
@@ -197,7 +197,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
 
         Rect nowLineFrame = new Rect();
-        nowLineFrame.top = gridTop;
+        nowLineFrame.top = 0;
         nowLineFrame.left = programsStart + detectNowLeft();
         nowLineFrame.right = nowLineFrame.left + layoutParams.nowLineWidth;
         nowLineFrame.bottom = nowLineFrame.top + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
@@ -350,18 +350,12 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     }
 
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
-        public int channelCellWidth = 0;
-        public int channelRowHeight = 0;
-        public int minuteWidth = 0;
-        public int nowLineWidth = 0;
+        public int channelCellWidth = 250;
+        public int channelRowHeight = 250;
+        public int minuteWidth = 20;
+        public int nowLineWidth = 1;
         public int nowLineColor = 0xFFFF0000;
         public int timeLineHeight = 150;
         public boolean cutProgramsToEdges = true;
-
-        public EPGLayoutParams(int channelCellWidth, int channelRowHeight, int minuteWidth) {
-            this.channelCellWidth = channelCellWidth;
-            this.channelRowHeight = channelRowHeight;
-            this.minuteWidth = minuteWidth;
-        }
     }
 }

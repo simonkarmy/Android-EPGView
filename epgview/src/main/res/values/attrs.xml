@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EPGView">
+        <attr name="epg_channelCellWidth" format="reference|dimension"/>
+        <attr name="epg_channelRowHeight" format="reference|dimension"/>
+        <attr name="epg_minuteWidth" format="reference|dimension"/>
+        <attr name="epg_timeLineHeight" format="reference|dimension"/>
+        <attr name="epg_nowLineThickness" format="reference|dimension"/>
+        <attr name="epg_nowLineColor" format="reference|color"/>
+    </declare-styleable>
+</resources>
