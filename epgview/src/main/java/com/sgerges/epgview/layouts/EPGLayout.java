@@ -345,6 +345,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         return proxies.get(data);
     }
 
+    public FreeFlowItem getNowLineFreeFlowItem() {
+        return proxies.get("NOW_LINE");
+    }
+
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
         public int channelCellWidth = 0;
         public int channelRowHeight = 0;

@@ -1911,6 +1911,12 @@ public class EPGView extends AbsLayoutContainer {
         scrollListeners.remove(listener);
     }
 
+    public void scrollToNow(boolean animate) {
+
+        FreeFlowItem nowLineFreeFlowItem = mLayout.getNowLineFreeFlowItem();
+        scrollToFreeFlowItem(nowLineFreeFlowItem, animate);
+    }
+
     public void scrollToItem(int sectionIndex, int itemIndex, boolean animate) {
         Section section;
 
@@ -1926,7 +1932,16 @@ public class EPGView extends AbsLayoutContainer {
         FreeFlowItem freeflowItem = mLayout.getFreeFlowItemForItem(section.getDataAtIndex(itemIndex));
         freeflowItem = FreeFlowItem.clone(freeflowItem);
 
-        int newVPX = freeflowItem.frame.left;
+        scrollToFreeFlowItem(freeflowItem, animate);
+    }
+
+    private void scrollToFreeFlowItem(FreeFlowItem freeflowItem, boolean animate) {
+
+        if(freeflowItem == null) {
+            return;
+        }
+
+        int newVPX = freeflowItem.frame.left - getWidth()/2;
         int newVPY = freeflowItem.frame.top;
 
         if (newVPX > mLayout.getContentWidth() - getMeasuredWidth())
@@ -1942,6 +1957,7 @@ public class EPGView extends AbsLayoutContainer {
             moveViewportBy((viewPortX - newVPX), (viewPortY - newVPY), false);
         }
     }
+
 
     /**
      * Returns the percentage of width scrolled. The values range from 0 to 1

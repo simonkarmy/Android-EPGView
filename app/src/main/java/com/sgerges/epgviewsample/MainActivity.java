@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinkedHashMap<ChannelData, List<ProgramData>> epgData = MockDataProvider.prepareMockData();
 
-        EPGView epgView = (EPGView) findViewById(R.id.epg_view);
+        final EPGView epgView = (EPGView) findViewById(R.id.epg_view);
 
         DefaultLayoutAnimator anim = (DefaultLayoutAnimator) epgView.getLayoutAnimator();
         anim.animateAllSetsSequentially = false;
@@ -58,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChannelItemSelected(AbsLayoutContainer parent, int channelIndex) {
                 Toast.makeText(MainActivity.this, "Channel Clicked channel=" + channelIndex, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        epgView.post(new Runnable() {
+            @Override
+            public void run() {
+                epgView.scrollToNow(true);
             }
         });
     }
