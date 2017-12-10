@@ -21,8 +21,8 @@ public class MockDataProvider {
 
     public static LinkedHashMap<ChannelData, List<ProgramData>> prepareMockData() {
 
-        String channelStr = Locale.getDefault() == Locale.ENGLISH ? "Channel " : "قناة ";
-        String programStr = Locale.getDefault() == Locale.ENGLISH ? "Program " : "برنامج ";
+        String channelStr = Locale.getDefault().getLanguage().equals("en") ? "Channel " : "قناة ";
+        String programStr = Locale.getDefault().getLanguage().equals("en") ? "Program " : "برنامج ";
 
         Calendar now = Calendar.getInstance();
         now.set(Calendar.HOUR_OF_DAY, 0);
