@@ -35,6 +35,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     public static final int TYPE_NOW_LINE = 2;
     public static final int TYPE_TIME_BAR = 3;
     public static final int TYPE_TIME_BAR_NOW_HEAD = 4;
+    public static final int TYPE_PREV_PROGRAMS_OVERLAY = 5;
 
     private static final String TAG = "EPGLayout";
 
@@ -101,6 +102,13 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             nowHeadItem.zIndex = 4;
             nowHeadItem.data = "NOW_HEAD";
             proxies.put("NOW_HEAD", nowHeadItem);
+
+            FreeFlowItem prevOverlayItem = new FreeFlowItem();
+            prevOverlayItem.frame = preparePrevOverlayFrame();
+            prevOverlayItem.type = TYPE_PREV_PROGRAMS_OVERLAY;
+            prevOverlayItem.zIndex = 1;
+            prevOverlayItem.data = "PREV_OVERLAY";
+            proxies.put("PREV_OVERLAY", prevOverlayItem);
         }
 
         //========== Time Line
@@ -192,6 +200,18 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         }
     }
 
+    public Rect preparePrevOverlayFrame() {
+
+        int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
+
+        Rect nowLineFrame = new Rect();
+        nowLineFrame.top = 0;
+        nowLineFrame.left = 0;
+        nowLineFrame.right = programsStart + detectNowLeft();
+        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        return nowLineFrame;
+    }
+
     public Rect prepareNowLineFrame() {
 
         int programsStart = itemsAdapter.shouldDisplaySectionHeaders() ? layoutParams.channelCellWidth : 0;
@@ -200,7 +220,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         nowLineFrame.top = 0;
         nowLineFrame.left = programsStart + detectNowLeft();
         nowLineFrame.right = nowLineFrame.left + layoutParams.nowLineWidth;
-        nowLineFrame.bottom = nowLineFrame.top + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
         return nowLineFrame;
     }
 
@@ -266,6 +286,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 if (fd.frame.bottom > viewPortTop && fd.frame.top < viewPortTop + height) {
                     desc.put(fd.data, fd);
                 }
+//            } else if(fd.type == TYPE_PREV_PROGRAMS_OVERLAY) {
+//                if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
+//                    desc.put(fd.data, fd);
+//                }
             } else if(fd.type == TYPE_TIME_BAR_NOW_HEAD) {
                 //in case of Time bar cell only check visibility for X index
                 //since in Y index it will be always visible on top

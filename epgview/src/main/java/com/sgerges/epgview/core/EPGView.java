@@ -431,6 +431,9 @@ public class EPGView extends AbsLayoutContainer {
                 view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
                 view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
+            } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
+                view = new View(getContext());
+                view.setBackgroundColor(0x55000000);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
@@ -517,7 +520,12 @@ public class EPGView extends AbsLayoutContainer {
             viewLeft = frame.left - viewPortX;
             viewRight = frame.right - viewPortX;
             viewTop = frame.top - viewPortY;
-            viewBottom = frame.bottom - viewPortY;
+            viewBottom = Math.min(frame.bottom - viewPortY, getHeight()); //TO only draw the visible area
+        } else if (freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
+            viewLeft = 0;
+            viewRight = Math.min(frame.right - viewPortX, getWidth()); //TO only draw the visible area
+            viewTop = 0;
+            viewBottom = Math.min(frame.bottom - viewPortY, getHeight()); //TO only draw the visible area
         } else if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
             viewLeft = 0;
             viewRight = cellWidth;
