@@ -33,9 +33,11 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.EdgeEffect;
 import android.widget.OverScroller;
+import android.widget.TextView;
 
 import com.sgerges.epgview.R;
 import com.sgerges.epgview.animations.DefaultLayoutAnimator;
@@ -59,8 +61,11 @@ public class EPGView extends AbsLayoutContainer {
 
     // ViewPool class
     protected ViewPool viewpool;
+
+    //Params added by Simon
     protected FreeFlowItem.ZIndexComparator zIndexComparator = new FreeFlowItem.ZIndexComparator();
     protected Timer nowLineTimer;
+    protected boolean isRTL;
 
     // Not used yet, but we'll probably need to
     // prevent layout in <code>layout()</code> method
@@ -111,7 +116,7 @@ public class EPGView extends AbsLayoutContainer {
 
     protected EdgeEffect mLeftEdge, mRightEdge, mTopEdge, mBottomEdge;
 
-    private ArrayList<OnScrollListener> scrollListeners = new ArrayList<OnScrollListener>();
+    private ArrayList<OnScrollListener> scrollListeners = new ArrayList<>();
 
     // This flag controls whether onTap/onLongPress/onTouch trigger
     // the ActionMode
@@ -163,8 +168,6 @@ public class EPGView extends AbsLayoutContainer {
      */
     int mChoiceMode = CHOICE_MODE_NONE;
 
-    private LayoutParams params = new LayoutParams(0, 0);
-
     private FreeFlowLayoutAnimator layoutAnimator = new DefaultLayoutAnimator();
 
     private FreeFlowItem beginTouchAt;
@@ -180,8 +183,6 @@ public class EPGView extends AbsLayoutContainer {
      * the Viewport to be jumping around.
      */
     private boolean shouldRecalculateScrollWhenComputingLayout = true;
-
-    private FreeFlowLayout oldLayout;
 
     private OnTouchModeChangedListener mOnTouchModeChangedListener;
 
@@ -207,6 +208,7 @@ public class EPGView extends AbsLayoutContainer {
 
         viewpool = new ViewPool();
         frames = new HashMap<>();
+        isRTL = getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 
         ViewConfiguration configuration = ViewConfiguration.get(context);
         maxFlingVelocity = configuration.getScaledMaximumFlingVelocity();
@@ -269,6 +271,9 @@ public class EPGView extends AbsLayoutContainer {
                 });
             }
         }, DateUtils.MINUTE_IN_MILLIS, DateUtils.MINUTE_IN_MILLIS);
+
+        //To mirror the screen in case of Arabic
+        setScaleX(isRTL ? -1f : 1f);
     }
 
     @Override
@@ -450,6 +455,30 @@ public class EPGView extends AbsLayoutContainer {
         int widthSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.width(), MeasureSpec.EXACTLY);
         int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
         view.measure(widthSpec, heightSpec);
+
+        if(isRTL) {
+            mirrorArabicBackIfTextView(view);
+        }
+    }
+
+    private void mirrorArabicBackIfTextView(View parentView) {
+
+        if (parentView == null)
+            return;
+
+        if(parentView instanceof TextView) {
+            parentView.setScaleX(-1f);
+            return;
+        }
+
+        if(parentView instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) parentView;
+            int childCount = viewGroup.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View view = viewGroup.getChildAt(i);
+                mirrorArabicBackIfTextView(view);
+            }
+        }
     }
 
     /**
@@ -527,14 +556,11 @@ public class EPGView extends AbsLayoutContainer {
             return;
         }
         stopScrolling();
-        oldLayout = mLayout;
         mLayout = newLayout;
         shouldRecalculateScrollWhenComputingLayout = true;
         if (mAdapter != null) {
             mLayout.setAdapter(mAdapter);
         }
-
-        dispatchLayoutChanging(oldLayout, newLayout);
 
         markLayoutDirty = true;
         viewPortX = 0;
@@ -1471,8 +1497,8 @@ public class EPGView extends AbsLayoutContainer {
         v.setTranslationX(0);
         v.setTranslationY(0);
         v.setRotation(0);
-        v.setScaleX(1f);
-        v.setScaleY(1f);
+//        v.setScaleX(isRTL ? -1f : 1f);
+//        v.setScaleY(1f);
         v.setAlpha(1);
         viewpool.returnViewToPool(v, freeflowItem.type);
     }

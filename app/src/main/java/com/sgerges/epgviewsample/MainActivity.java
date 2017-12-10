@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class EPGDataAdapter extends EPGAdapter<ChannelData, ProgramData> {
 
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
 
         public EPGDataAdapter(LinkedHashMap<ChannelData, List<ProgramData>> channelToProgramsMap) {
             super(channelToProgramsMap);

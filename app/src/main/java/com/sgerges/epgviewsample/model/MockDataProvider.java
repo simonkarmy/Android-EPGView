@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -19,6 +20,9 @@ public class MockDataProvider {
     public static long endOfToday;
 
     public static LinkedHashMap<ChannelData, List<ProgramData>> prepareMockData() {
+
+        String channelStr = Locale.getDefault() == Locale.ENGLISH ? "Channel " : "قناة ";
+        String programStr = Locale.getDefault() == Locale.ENGLISH ? "Program " : "برنامج ";
 
         Calendar now = Calendar.getInstance();
         now.set(Calendar.HOUR_OF_DAY, 0);
@@ -40,7 +44,7 @@ public class MockDataProvider {
         for (int channelIndex = 0; channelIndex < 80; channelIndex++) {
 
             ChannelData channelData = new ChannelData();
-            channelData.setChannelName("Channel " + channelIndex);
+            channelData.setChannelName(channelStr + channelIndex);
             channelData.setChannelNumber(channelIndex);
 
             long timeProgress = startOfToday;
@@ -50,7 +54,7 @@ public class MockDataProvider {
 
                 ProgramData program = new ProgramData();
 
-                program.setTitle(channelData.getChannelName() + " " + "Program " + channelPrograms.size());
+                program.setTitle(channelData.getChannelName() + " " + programStr + channelPrograms.size());
                 program.setStartTime(timeProgress);
 
                 //minimum 5 minutes and max 120 min
