@@ -14,7 +14,8 @@
         app:epg_channelCellWidth="70dp"
         app:epg_channelRowHeight="70dp"
         app:epg_minuteWidth="6dp"
-        app:epg_nowLineColor="#FF0000"
         app:epg_timeLineHeight="46dp"
-        app:epg_nowLineThickness="3dp"/>
+        app:epg_nowLineColor="#FF0000"
+        app:epg_nowLineThickness="3dp"
+        app:epg_showPrevProgramsOverlay="false"/>
 </FrameLayout>

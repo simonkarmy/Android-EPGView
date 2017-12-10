@@ -242,8 +242,7 @@ public class EPGView extends AbsLayoutContainer {
             }
         });
 
-        EPGLayout epgLayout = new EPGLayout();
-        EPGLayout.EPGLayoutParams layoutParams = epgLayout.getLayoutParams();
+        EPGLayout.EPGLayoutParams layoutParams = new EPGLayout.EPGLayoutParams();
 
         //Read from xml attrs styles
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EPGView, defStyle, 0);
@@ -254,8 +253,12 @@ public class EPGView extends AbsLayoutContainer {
         layoutParams.nowLineWidth = a.getDimensionPixelSize(R.styleable.EPGView_epg_nowLineThickness, layoutParams.nowLineWidth);
         layoutParams.nowLineColor = a.getColor(R.styleable.EPGView_epg_nowLineColor, layoutParams.nowLineColor);
         layoutParams.timeLineHeight = a.getDimensionPixelSize(R.styleable.EPGView_epg_timeLineHeight, layoutParams.timeLineHeight);
+        layoutParams.showPrevProgramsOverlay = a.getBoolean(R.styleable.EPGView_epg_showPrevProgramsOverlay, layoutParams.showPrevProgramsOverlay);
 
         a.recycle();
+
+        EPGLayout epgLayout = new EPGLayout();
+        epgLayout.setLayoutParams(layoutParams);
 
         setLayout(epgLayout);
 

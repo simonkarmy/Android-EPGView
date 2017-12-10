@@ -103,12 +103,14 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             nowHeadItem.data = "NOW_HEAD";
             proxies.put("NOW_HEAD", nowHeadItem);
 
-            FreeFlowItem prevOverlayItem = new FreeFlowItem();
-            prevOverlayItem.frame = preparePrevOverlayFrame();
-            prevOverlayItem.type = TYPE_PREV_PROGRAMS_OVERLAY;
-            prevOverlayItem.zIndex = 1;
-            prevOverlayItem.data = "PREV_OVERLAY";
-            proxies.put("PREV_OVERLAY", prevOverlayItem);
+            if(layoutParams.showPrevProgramsOverlay) {
+                FreeFlowItem prevOverlayItem = new FreeFlowItem();
+                prevOverlayItem.frame = preparePrevOverlayFrame();
+                prevOverlayItem.type = TYPE_PREV_PROGRAMS_OVERLAY;
+                prevOverlayItem.zIndex = 1;
+                prevOverlayItem.data = "PREV_OVERLAY";
+                proxies.put("PREV_OVERLAY", prevOverlayItem);
+            }
         }
 
         //========== Time Line
@@ -374,6 +376,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     }
 
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
+        public boolean showPrevProgramsOverlay = true;
         public int channelCellWidth = 250;
         public int channelRowHeight = 250;
         public int minuteWidth = 20;
