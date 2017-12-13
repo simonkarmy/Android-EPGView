@@ -8,5 +8,6 @@
         <attr name="epg_nowLineThickness" format="reference|dimension"/>
         <attr name="epg_nowLineColor" format="reference|color"/>
         <attr name="epg_showPrevProgramsOverlay" format="boolean"/>
+        <attr name="epg_prevProgramsOverlayColor" format="reference|color"/>
     </declare-styleable>
 </resources>

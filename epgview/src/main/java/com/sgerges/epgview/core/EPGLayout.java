@@ -369,6 +369,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
         public boolean showPrevProgramsOverlay = true;
+        public int prevProgramsOverlayColor = 0x8C000000;
         public int channelCellWidth = 250;
         public int channelRowHeight = 250;
         public int minuteWidth = 20;

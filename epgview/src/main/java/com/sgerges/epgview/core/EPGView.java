@@ -433,7 +433,7 @@ public class EPGView extends AbsLayoutContainer {
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
                 view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
-                view = mAdapter.getOverlayViewForPrevPrograms(convertView, this);
+                view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);

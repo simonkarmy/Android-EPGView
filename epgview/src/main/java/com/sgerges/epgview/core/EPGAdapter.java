@@ -56,11 +56,11 @@ public abstract class EPGAdapter<C, P> {
         return null;
     }
 
-    protected View getOverlayViewForPrevPrograms(View convertView, ViewGroup parent) {
+    View getOverlayViewForPrevPrograms(int color, View convertView, ViewGroup parent) {
 
         if(convertView == null) {
             convertView = new View(parent.getContext());
-            convertView.setBackgroundColor(0x55000000);
+            convertView.setBackgroundColor(color);
         }
         return convertView;
     }
