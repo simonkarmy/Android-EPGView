@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sgerges.epgview.layouts;
+package com.sgerges.epgview.core;
 
-
-import com.sgerges.epgview.core.FreeFlowItem;
-import com.sgerges.epgview.core.SectionedAdapter;
 
 import java.util.Map;
 
@@ -42,7 +39,7 @@ public interface FreeFlowLayout {
 	 */
 	public void setDimensions(int measuredWidth, int measuredHeight);
 
-	public void setAdapter(SectionedAdapter adapter);
+	public void setAdapter(EPGAdapter adapter);
 
 	/**
 	 * Generate the item proxies of all views in the given viewport, you provide

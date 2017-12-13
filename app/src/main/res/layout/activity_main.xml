@@ -17,5 +17,5 @@
         app:epg_timeLineHeight="46dp"
         app:epg_nowLineColor="#FF0000"
         app:epg_nowLineThickness="3dp"
-        app:epg_showPrevProgramsOverlay="false"/>
+        app:epg_showPrevProgramsOverlay="true"/>
 </FrameLayout>

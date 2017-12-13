@@ -16,8 +16,6 @@
 package com.sgerges.epgview.core;
 
 
-import com.sgerges.epgview.layouts.FreeFlowLayout;
-
 /**
  * Interface that all listeners interested in layout change events must
  * implement

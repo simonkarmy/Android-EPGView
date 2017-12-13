@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.sgerges.epgview.layouts;
+package com.sgerges.epgview.core;
 
 import android.graphics.Rect;
 import android.text.format.DateUtils;
 
-import com.sgerges.epgview.core.EPGAdapter;
-import com.sgerges.epgview.core.FreeFlowItem;
-import com.sgerges.epgview.core.Section;
-import com.sgerges.epgview.core.SectionedAdapter;
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.Calendar;
@@ -55,12 +51,8 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     }
 
     @Override
-    public void setAdapter(SectionedAdapter adapter) {
-        if(adapter instanceof EPGAdapter) {
-            itemsAdapter = (EPGAdapter) adapter;
-        } else {
-            throw new IllegalArgumentException("EPGLayout only accepts EPGAdapter");
-        }
+    public void setAdapter(EPGAdapter adapter) {
+            itemsAdapter = adapter;
     }
 
     @Override
@@ -148,7 +140,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
         //========= Channels Headers
 
-        for (int sectionIndex = 0; sectionIndex < itemsAdapter.getNumberOfSections(); sectionIndex++) {
+        for (int sectionIndex = 0; sectionIndex < itemsAdapter.getNumberOfChannels(); sectionIndex++) {
 
             Section section = itemsAdapter.getSection(sectionIndex);
 
@@ -210,7 +202,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         nowLineFrame.top = 0;
         nowLineFrame.left = 0;
         nowLineFrame.right = programsStart + detectNowLeft();
-        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfChannels() * layoutParams.channelRowHeight;
         return nowLineFrame;
     }
 
@@ -222,7 +214,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         nowLineFrame.top = 0;
         nowLineFrame.left = programsStart + detectNowLeft();
         nowLineFrame.right = nowLineFrame.left + layoutParams.nowLineWidth;
-        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfSections() * layoutParams.channelRowHeight;
+        nowLineFrame.bottom = gridTop + itemsAdapter.getNumberOfChannels() * layoutParams.channelRowHeight;
         return nowLineFrame;
     }
 
@@ -348,11 +340,11 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     @Override
     public int getContentHeight() {
-        if (itemsAdapter == null || itemsAdapter.getNumberOfSections() <= 0) {
+        if (itemsAdapter == null || itemsAdapter.getNumberOfChannels() <= 0) {
             return 0;
         }
 
-        int sectionIndex = itemsAdapter.getNumberOfSections() - 1;
+        int sectionIndex = itemsAdapter.getNumberOfChannels() - 1;
         Section s = itemsAdapter.getSection(sectionIndex);
 
         if (s.getDataCount() == 0)

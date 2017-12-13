@@ -13,7 +13,7 @@ import java.util.Map;
  * <p>
  */
 
-public abstract class EPGAdapter<C, P> implements SectionedAdapter {
+public abstract class EPGAdapter<C, P> {
 
     private List<Section<C, P>> sections;
 
@@ -28,49 +28,52 @@ public abstract class EPGAdapter<C, P> implements SectionedAdapter {
         }
     }
 
-    @Override
-    public View getItemView(int section, int position, View convertView, ViewGroup parent) {
+    View getItemView(int section, int position, View convertView, ViewGroup parent) {
 
         P program = sections.get(section).getDataAtIndex(position);
         return getViewForProgram(program, convertView, parent);
     }
 
-    @Override
-    public View getHeaderViewForSection(int section, View convertView, ViewGroup parent) {
+    View getHeaderViewForSection(int section, View convertView, ViewGroup parent) {
 
         C channel = sections.get(section).getHeaderData();
         return getViewForChannel(channel, convertView, parent);
     }
 
-    @Override
-    public long getItemId(int section, int position) {
-        return section * 1000 + position;
+    long getItemId(int channelIndex, int programIndex) {
+        return channelIndex * 1000 + programIndex;
     }
 
-    @Override
-    public int getNumberOfSections() {
+
+    int getNumberOfChannels() {
         return sections.size();
     }
 
-    @Override
-    public Section getSection(int index) {
+    Section getSection(int index) {
         if (index < sections.size() && index >= 0)
             return sections.get(index);
 
         return null;
     }
 
-    public P getProgramAt(int section, int position) {
+    protected View getOverlayViewForPrevPrograms(View convertView, ViewGroup parent) {
+
+        if(convertView == null) {
+            convertView = new View(parent.getContext());
+            convertView.setBackgroundColor(0x55000000);
+        }
+        return convertView;
+    }
+
+    protected P getProgramAt(int section, int position) {
         return sections.get(section).getDataAtIndex(position);
     }
 
-
-    @Override
-    public boolean shouldDisplaySectionHeaders() {
+    protected boolean shouldDisplaySectionHeaders() {
         return true;
     }
 
-    public boolean shouldDisplayTimeLine() {
+    protected boolean shouldDisplayTimeLine() {
         return true;
     }
 
@@ -80,6 +83,7 @@ public abstract class EPGAdapter<C, P> implements SectionedAdapter {
 
     protected abstract View getViewForChannel(C channel, View convertView, ViewGroup parent);
     protected abstract View getViewForProgram(P program, View convertView, ViewGroup parent);
+    protected abstract View getViewForTimeCell(Long time, View convertView, ViewGroup parent);
 
     public abstract long getStartTimeForProgramAt(int section, int position);
     public abstract long getEndTimeForProgramAt(int section, int position);

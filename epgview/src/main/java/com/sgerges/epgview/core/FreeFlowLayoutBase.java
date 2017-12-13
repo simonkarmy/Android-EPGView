@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.sgerges.epgview.layouts;
+package com.sgerges.epgview.core;
 
 public abstract class FreeFlowLayoutBase implements FreeFlowLayout {
 

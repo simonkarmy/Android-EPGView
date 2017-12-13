@@ -22,8 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.sgerges.epgview.layouts.FreeFlowLayout;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;

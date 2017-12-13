@@ -42,8 +42,6 @@ import android.widget.TextView;
 import com.sgerges.epgview.R;
 import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.animations.FreeFlowLayoutAnimator;
-import com.sgerges.epgview.layouts.EPGLayout;
-import com.sgerges.epgview.layouts.FreeFlowLayout;
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -71,7 +69,7 @@ public class EPGView extends AbsLayoutContainer {
     // prevent layout in <code>layout()</code> method
     private boolean preventLayout = false;
 
-    protected SectionedAdapter mAdapter;
+    protected EPGAdapter mAdapter;
     protected EPGLayout mLayout;
 
     /**
@@ -435,8 +433,7 @@ public class EPGView extends AbsLayoutContainer {
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
                 view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
-                view = new View(getContext());
-                view.setBackgroundColor(0x55000000);
+                view = mAdapter.getOverlayViewForPrevPrograms(convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
@@ -839,10 +836,10 @@ public class EPGView extends AbsLayoutContainer {
      * Sets the adapter for the this CollectionView.All view pools will be
      * cleared at this point and all views on the stage will be cleared
      *
-     * @param adapter The {@link SectionedAdapter} that will populate this
+     * @param adapter The {@link EPGAdapter} that will populate this
      *                Collection
      */
-    public void setAdapter(SectionedAdapter adapter) {
+    public void setAdapter(EPGAdapter adapter) {
         if (adapter == mAdapter) {
             return;
         }
@@ -1514,7 +1511,7 @@ public class EPGView extends AbsLayoutContainer {
         viewpool.returnViewToPool(v, freeflowItem.type);
     }
 
-    public SectionedAdapter getAdapter() {
+    public EPGAdapter getAdapter() {
         return mAdapter;
     }
 
@@ -1965,7 +1962,7 @@ public class EPGView extends AbsLayoutContainer {
     public void scrollToItem(int sectionIndex, int itemIndex, boolean animate) {
         Section section;
 
-        if (sectionIndex > mAdapter.getNumberOfSections() || sectionIndex < 0
+        if (sectionIndex > mAdapter.getNumberOfChannels() || sectionIndex < 0
                 || (section = mAdapter.getSection(sectionIndex)) == null) {
             return;
         }
