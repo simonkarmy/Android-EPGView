@@ -265,7 +265,6 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
      * <p>
      *     That by comparing all cells frame with the current viewPort frame
      *     If the cell frame is within the visible port, then display it.
-     *     <br/>
      *     Also it keep in minds the cell type and will it stick Hor/Ver
      * {@inheritDoc}
      */

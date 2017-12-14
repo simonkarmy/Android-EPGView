@@ -43,7 +43,7 @@ public interface FreeFlowLayoutAnimator {
 	 * <code>Container</code> when the animations are done by calling the
 	 * <code>onLayoutChangeAnimationsCompleted</code> method on it.
 	 * 
-	 * @see EPGView#onLayoutChangeAnimationsCompleted(LayoutAnimator)
+	 * @see EPGView#onLayoutChangeAnimationsCompleted(FreeFlowLayoutAnimator)
 	 * 
 	 * @param changes
 	 *            The Changeset to be animated
