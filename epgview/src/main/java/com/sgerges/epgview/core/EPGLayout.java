@@ -367,6 +367,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         return proxies.get("NOW_LINE");
     }
 
+    public void forceUpdateFrame(Object data, Rect frame) {
+        proxies.get(data).frame = frame;
+    }
+
     public static class EPGLayoutParams extends FreeFlowLayoutParams {
         public boolean showPrevProgramsOverlay = true;
         public int prevProgramsOverlayColor = 0x8C000000;

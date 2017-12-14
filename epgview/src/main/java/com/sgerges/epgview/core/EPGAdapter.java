@@ -84,6 +84,7 @@ public abstract class EPGAdapter<C, P> {
     protected abstract View getViewForChannel(C channel, View convertView, ViewGroup parent);
     protected abstract View getViewForProgram(P program, View convertView, ViewGroup parent);
     protected abstract View getViewForTimeCell(Long time, View convertView, ViewGroup parent);
+    protected abstract View getViewForNowLineHead(View convertView, ViewGroup parent);
 
     public abstract long getStartTimeForProgramAt(int section, int position);
     public abstract long getEndTimeForProgramAt(int section, int position);

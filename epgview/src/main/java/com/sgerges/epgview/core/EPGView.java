@@ -252,6 +252,7 @@ public class EPGView extends AbsLayoutContainer {
         layoutParams.nowLineColor = a.getColor(R.styleable.EPGView_epg_nowLineColor, layoutParams.nowLineColor);
         layoutParams.timeLineHeight = a.getDimensionPixelSize(R.styleable.EPGView_epg_timeLineHeight, layoutParams.timeLineHeight);
         layoutParams.showPrevProgramsOverlay = a.getBoolean(R.styleable.EPGView_epg_showPrevProgramsOverlay, layoutParams.showPrevProgramsOverlay);
+        layoutParams.prevProgramsOverlayColor = a.getInt(R.styleable.EPGView_epg_prevProgramsOverlayColor, layoutParams.prevProgramsOverlayColor);
 
         a.recycle();
 
@@ -435,8 +436,12 @@ public class EPGView extends AbsLayoutContainer {
             } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
                 view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
             } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
-                view = new View(getContext());
-                view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
+                view = mAdapter.getViewForNowLineHead(convertView, this);
+                if(view.getLayoutParams().width != 0 && view.getLayoutParams().height != 0) {
+                    freeflowItem.frame.right = freeflowItem.frame.left + view.getLayoutParams().width;
+                    freeflowItem.frame.bottom = freeflowItem.frame.top + view.getLayoutParams().height;
+                    mLayout.forceUpdateFrame(freeflowItem.data, freeflowItem.frame);
+                }
             } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
                 view = new View(getContext());
                 view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);

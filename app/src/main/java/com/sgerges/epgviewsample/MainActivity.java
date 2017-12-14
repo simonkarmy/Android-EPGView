@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -121,7 +122,17 @@ public class MainActivity extends AppCompatActivity {
             tv.setPadding(9,9,9,9);
             tv.setGravity(Gravity.CENTER);
             tv.setEllipsize(TextUtils.TruncateAt.END);
+
             return tv;
+        }
+
+        @Override
+        protected View getViewForNowLineHead(View convertView, ViewGroup parent) {
+
+            if(convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.now_line_head, parent, false);
+            }
+            return convertView;
         }
 
         @Override
