@@ -1,7 +1,7 @@
 # Android-EPGView
 Android library to display EPG view
 
-### Gardle Import
+### Gradle Import
 
 ```jsx
 implementation 'com.sgerges:epg-view:1.0.3'
