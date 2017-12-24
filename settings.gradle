@@ -1,1 +1,1 @@
-include ':app', ':epgview'
+include ':app', ':epg-view'
