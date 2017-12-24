@@ -131,6 +131,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             timeCellFrame.bottom = timeCellFrame.top + layoutParams.timeLineHeight;
 
             timeCell.frame = timeCellFrame;
+            timeCell.clickable = true;
             timeCell.data = currentTime.getTimeInMillis();
 
             proxies.put(currentTime.getTimeInMillis(), timeCell);
