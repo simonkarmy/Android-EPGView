@@ -28,6 +28,7 @@ public class FreeFlowItem {
 	public Rect frame;
 	public View view;
 	public int type;
+	public boolean clickable;
 
     public FreeFlowItem() {
     }
@@ -44,6 +45,7 @@ public class FreeFlowItem {
 		fd.zIndex = desc.zIndex;
 		fd.view = desc.view;
 		fd.type = desc.type;
+		fd.clickable = desc.clickable;
 		return fd;
 	}
 

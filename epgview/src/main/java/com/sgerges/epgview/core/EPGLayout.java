@@ -160,6 +160,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 header.frame = hframe;
                 header.data = section.getHeaderData();
                 header.type = TYPE_CHANNEL;
+                header.clickable = true;
                 proxies.put(header.data, header);
             }
 
@@ -183,6 +184,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 descriptor.frame = frame;
                 descriptor.data = section.getDataAtIndex(programIndex);
                 descriptor.zIndex = 0;
+                descriptor.clickable = true;
                 proxies.put(descriptor.data, descriptor);
 
                 descriptor.type = TYPE_CELL;
