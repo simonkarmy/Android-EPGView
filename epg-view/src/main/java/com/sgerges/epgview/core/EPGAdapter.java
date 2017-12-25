@@ -17,7 +17,11 @@ public abstract class EPGAdapter<C, P> {
 
     private List<Section<C, P>> sections;
 
-    public EPGAdapter(LinkedHashMap<C, List<P>> channelToProgramsMap) {
+    public EPGAdapter() {
+        sections = new ArrayList<>();
+    }
+
+    public void updateDataWith(LinkedHashMap<C, List<P>> channelToProgramsMap) {
 
         sections = new ArrayList<>(channelToProgramsMap.size());
         for (Map.Entry<C, List<P>> channelEntry : channelToProgramsMap.entrySet()) {

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EPGViewSample.iml" filepath="$PROJECT_DIR$/EPGViewSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/epg-view/epg-view.iml" filepath="$PROJECT_DIR$/epg-view/epg-view.iml" />
       <module fileurl="file://$PROJECT_DIR$/epg-view/epgview.iml" filepath="$PROJECT_DIR$/epg-view/epgview.iml" />
     </modules>
   </component>

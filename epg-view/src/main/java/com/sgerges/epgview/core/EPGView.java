@@ -322,14 +322,14 @@ public class EPGView extends AbsLayoutContainer {
 
     protected boolean dataSetChanged = false;
 
-    /**
-     * Notifies the attached observers that the underlying data has been changed
-     * and any View reflecting the data set should refresh itself.
-     */
-    public void notifyDataSetChanged() {
-        dataSetChanged = true;
-        requestLayout();
-    }
+//    /**
+//     * Notifies the attached observers that the underlying data has been changed
+//     * and any View reflecting the data set should refresh itself.
+//     */
+//    public void notifyDataSetChanged() {
+//        dataSetChanged = true;
+//        requestLayout();
+//    }
 
     /**
      * @deprecated Use dataInvalidated(boolean shouldRecalculateScrollPositions)
@@ -422,50 +422,55 @@ public class EPGView extends AbsLayoutContainer {
      *                     being positioned
      */
     protected void addAndMeasureViewIfNeeded(final FreeFlowItem freeflowItem) {
-        View view;
-        if (freeflowItem.view == null) {
+        try {
+            View view;
+            if (freeflowItem.view == null) {
 
-            View convertView = viewpool.getViewFromPool(freeflowItem.type);
+                View convertView = viewpool.getViewFromPool(freeflowItem.type);
 
-            if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
-                view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
-            } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
-                view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
-            } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
-                view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
-            } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
-                view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
-            } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
-                view = mAdapter.getViewForNowLineHead(convertView, this);
-                if(view.getLayoutParams().width != 0 && view.getLayoutParams().height != 0) {
-                    freeflowItem.frame.right = freeflowItem.frame.left + view.getLayoutParams().width;
-                    freeflowItem.frame.bottom = freeflowItem.frame.top + view.getLayoutParams().height;
-                    mLayout.forceUpdateFrame(freeflowItem.data, freeflowItem.frame);
+                if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
+                    view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
+                } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
+                    view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
+                } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
+                    view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
+                } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
+                    view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
+                } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
+                    view = mAdapter.getViewForNowLineHead(convertView, this);
+                    if(view.getLayoutParams().width != 0 && view.getLayoutParams().height != 0) {
+                        freeflowItem.frame.right = freeflowItem.frame.left + view.getLayoutParams().width;
+                        freeflowItem.frame.bottom = freeflowItem.frame.top + view.getLayoutParams().height;
+                        mLayout.forceUpdateFrame(freeflowItem.data, freeflowItem.frame);
+                    }
+                } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+                    view = new View(getContext());
+                    view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
+                } else {
+                    view = new View(getContext());
                 }
-            } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
-                view = new View(getContext());
-                view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
-            } else {
-                view = new View(getContext());
+
+                if (view instanceof EPGView)
+                    throw new IllegalStateException("A container cannot be a direct child view to a container");
+
+                freeflowItem.view = view;
+                prepareViewForAddition(view, freeflowItem);
+
+                addView(view);
             }
 
-            if (view instanceof EPGView)
-                throw new IllegalStateException("A container cannot be a direct child view to a container");
+            view = freeflowItem.view;
 
-            freeflowItem.view = view;
-            prepareViewForAddition(view, freeflowItem);
+            int widthSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.width(), MeasureSpec.EXACTLY);
+            int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
+            view.measure(widthSpec, heightSpec);
 
-            addView(view);
-        }
-
-        view = freeflowItem.view;
-
-        int widthSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.width(), MeasureSpec.EXACTLY);
-        int heightSpec = MeasureSpec.makeMeasureSpec(freeflowItem.frame.height(), MeasureSpec.EXACTLY);
-        view.measure(widthSpec, heightSpec);
-
-        if(isRTL) {
-            mirrorArabicBackIfTextView(view);
+            if(isRTL) {
+                mirrorArabicBackIfTextView(view);
+            }
+        } catch (Throwable throwable) {
+            //FIXME: Sometimes addView throws IllegalStateException: The specified child already has a parent. You must call removeView() on the child's parent first.
+            throwable.printStackTrace();
         }
     }
 
@@ -858,6 +863,15 @@ public class EPGView extends AbsLayoutContainer {
         this.mAdapter = adapter;
         if (mLayout != null) {
             mLayout.setAdapter(mAdapter);
+        }
+        requestLayout();
+    }
+
+    public void notifyDataSetChanged() {
+        markAdapterDirty = true;
+        shouldRecalculateScrollWhenComputingLayout = true;
+        if (mLayout != null) {
+            mLayout.prepareLayout();
         }
         requestLayout();
     }

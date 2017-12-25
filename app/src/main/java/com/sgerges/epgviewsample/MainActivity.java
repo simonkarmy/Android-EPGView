@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         epgView.requestFocus();
 
-        epgView.setAdapter(new EPGDataAdapter(epgData));
+        final EPGDataAdapter adapter = new EPGDataAdapter();
+        epgView.setAdapter(adapter);
         epgView.setmOnEPGItemSelectedListener(new EPGView.OnEPGItemSelectedListener() {
             @Override
             public void onProgramItemSelected(AbsLayoutContainer parent, int channelIndex, int programIndex) {
@@ -54,21 +55,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        epgView.post(new Runnable() {
+        epgView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                epgView.scrollToNow(true);
+
+                LinkedHashMap<ChannelData, List<ProgramData>> epgData = MockDataProvider.prepareMockData();
+                adapter.updateDataWith(epgData);
+                epgView.notifyDataSetChanged();
+                epgView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        epgView.scrollToNow(true);
+                    }
+                });
             }
-        });
+        }, 1000);
+
     }
 
     private class EPGDataAdapter extends EPGAdapter<ChannelData, ProgramData> {
 
         DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-
-        public EPGDataAdapter(LinkedHashMap<ChannelData, List<ProgramData>> channelToProgramsMap) {
-            super(channelToProgramsMap);
-        }
 
         @Override
         protected View getViewForChannel(ChannelData channel, View convertView, ViewGroup parent) {
