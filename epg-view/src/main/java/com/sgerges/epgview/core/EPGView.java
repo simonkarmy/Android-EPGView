@@ -2033,13 +2033,17 @@ public class EPGView extends AbsLayoutContainer {
         }
 
         if (animate) {
-            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX), (newVPY - viewPortY), 1300);
+            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX), (newVPY - viewPortY), 1000);
             post(flingRunnable);
         } else {
             moveViewportBy((viewPortX - newVPX), (viewPortY - newVPY), false);
         }
     }
 
+    public boolean isNowLineVisible() {
+        FreeFlowItem nowLineFreeFlowItem = mLayout.getNowLineFreeFlowItem();
+        return nowLineFreeFlowItem.frame.left > viewPortX && nowLineFreeFlowItem.frame.left < (viewPortX + getMeasuredWidth());
+    }
 
     /**
      * Returns the percentage of width scrolled. The values range from 0 to 1

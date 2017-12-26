@@ -38,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         epgView.requestFocus();
 
+        final View nowButton = findViewById(R.id.scroll_to_now_button);
+        epgView.addScrollListener(new EPGView.OnScrollListener() {
+            @Override
+            public void onScroll(EPGView container) {
+                nowButton.setVisibility(container.isNowLineVisible() ? View.INVISIBLE : View.VISIBLE);
+            }
+        });
+
         final EPGDataAdapter adapter = new EPGDataAdapter();
         epgView.setAdapter(adapter);
         epgView.setmOnEPGItemSelectedListener(new EPGView.OnEPGItemSelectedListener() {
