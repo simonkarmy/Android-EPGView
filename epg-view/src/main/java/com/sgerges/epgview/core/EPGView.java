@@ -2042,7 +2042,12 @@ public class EPGView extends AbsLayoutContainer {
 
     public boolean isNowLineVisible() {
         FreeFlowItem nowLineFreeFlowItem = mLayout.getNowLineFreeFlowItem();
-        return nowLineFreeFlowItem.frame.left > viewPortX && nowLineFreeFlowItem.frame.left < (viewPortX + getMeasuredWidth());
+        if(nowLineFreeFlowItem != null) {
+            return nowLineFreeFlowItem.frame.left > viewPortX && nowLineFreeFlowItem.frame.left < (viewPortX + getMeasuredWidth());
+        } else {
+            return false;
+        }
+
     }
 
     /**
