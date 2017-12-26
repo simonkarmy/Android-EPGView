@@ -302,16 +302,21 @@ public class EPGView extends AbsLayoutContainer {
 
         }
 
-        if (widthMode != MeasureSpec.UNSPECIFIED && heightMode != MeasureSpec.UNSPECIFIED) {
+//        if (widthMode != MeasureSpec.UNSPECIFIED && heightMode != MeasureSpec.UNSPECIFIED) {
+//            markAdapterDirty = false;
+//            markLayoutDirty = false;
+//            computeLayout(afterWidth, afterHeight, sizeChanged);
+//        }
+        if (markAdapterDirty || markLayoutDirty) {
             markAdapterDirty = false;
             markLayoutDirty = false;
-            computeLayout(afterWidth, afterHeight, sizeChanged);
+            computeLayout(afterWidth, afterHeight, true);
         }
 
         if (dataSetChanged) {
             dataSetChanged = false;
             for (FreeFlowItem item : frames.values()) {
-                if (item.itemIndex >= 0 && item.itemSection >= 0) {
+                if (item.itemIndex >= 0 && item.itemSection >= 0 && (item.type == EPGLayout.TYPE_CELL || item.type ==EPGLayout.TYPE_CHANNEL)) {
                     mAdapter.getItemView(item.itemSection, item.itemIndex, item.view, this);
                 }
             }
@@ -322,14 +327,17 @@ public class EPGView extends AbsLayoutContainer {
 
     protected boolean dataSetChanged = false;
 
-//    /**
-//     * Notifies the attached observers that the underlying data has been changed
-//     * and any View reflecting the data set should refresh itself.
-//     */
-//    public void notifyDataSetChanged() {
-//        dataSetChanged = true;
-//        requestLayout();
-//    }
+    /**
+     * Notifies the attached observers that the underlying data has been changed
+     * and any View reflecting the data set should refresh itself.
+     */
+    public void notifyDataSetChanged() {
+        dataSetChanged = true;
+        markAdapterDirty = true;
+        markLayoutDirty = true;
+
+        requestLayout();
+    }
 
     /**
      * @deprecated Use dataInvalidated(boolean shouldRecalculateScrollPositions)
@@ -867,14 +875,14 @@ public class EPGView extends AbsLayoutContainer {
         requestLayout();
     }
 
-    public void notifyDataSetChanged() {
-        markAdapterDirty = true;
-        shouldRecalculateScrollWhenComputingLayout = true;
-        if (mLayout != null) {
-            mLayout.prepareLayout();
-        }
-        requestLayout();
-    }
+//    public void notifyDataSetChanged() {
+//        markAdapterDirty = true;
+//        shouldRecalculateScrollWhenComputingLayout = true;
+//        if (mLayout != null) {
+//            mLayout.prepareLayout();
+//        }
+//        requestLayout();
+//    }
 
     /**
      * The Viewport defines the rectangular "window" that the container is

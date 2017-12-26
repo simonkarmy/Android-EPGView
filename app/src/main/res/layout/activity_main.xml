@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,6 +7,11 @@
     android:id="@+id/frameLayout"
     tools:context="com.sgerges.epgviewsample.MainActivity">
 
+    <View
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#FF00FF00"/>
     <com.sgerges.epgview.core.EPGView
         android:id="@+id/epg_view"
         android:layout_width="match_parent"
@@ -17,6 +22,7 @@
         app:epg_timeLineHeight="46dp"
         app:epg_nowLineColor="#FF0000"
         app:epg_nowLineThickness="3dp"
+        android:layout_below="@id/header"
         app:epg_prevProgramsOverlayColor="#66000000"
         app:epg_showPrevProgramsOverlay="true"/>
-</FrameLayout>
+</RelativeLayout>
