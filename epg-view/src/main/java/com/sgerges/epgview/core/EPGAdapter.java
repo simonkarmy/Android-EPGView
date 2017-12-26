@@ -53,6 +53,10 @@ public abstract class EPGAdapter<C, P> {
         return sections.size();
     }
 
+    public boolean isDataEmpty() {
+        return getNumberOfChannels() == 0;
+    }
+
     Section getSection(int index) {
         if (index < sections.size() && index >= 0)
             return sections.get(index);
