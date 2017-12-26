@@ -69,8 +69,12 @@ public abstract class EPGAdapter<C, P> {
         return convertView;
     }
 
-    protected P getProgramAt(int section, int position) {
+    public P getProgramAt(int section, int position) {
         return sections.get(section).getDataAtIndex(position);
+    }
+
+    public C getChannelAt(int section, int position) {
+        return sections.get(section).headerData;
     }
 
     protected boolean shouldDisplaySectionHeaders() {
