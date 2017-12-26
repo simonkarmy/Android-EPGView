@@ -23,6 +23,7 @@ import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -46,6 +47,7 @@ import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -831,6 +833,10 @@ public class EPGView extends AbsLayoutContainer {
 
         for (FreeFlowItem freeflowItem : oldFrames.values()) {
             change.addToDeleted(freeflowItem);
+            if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
+                Date itemTime = new Date((Long) freeflowItem.data);
+                Log.d("ajshdashlf", "ijsfhalshfa;shf;hsd;fia");
+            }
         }
 
         frames = newFrames;

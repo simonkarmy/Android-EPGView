@@ -28,17 +28,22 @@
             android:text="Go Now"
             android:onClick="onScrollToNowClicked"/>
     </LinearLayout>
-    <com.sgerges.epgview.core.EPGView
-        android:id="@+id/epg_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:epg_channelCellWidth="70dp"
-        app:epg_channelRowHeight="70dp"
-        app:epg_minuteWidth="6dp"
-        app:epg_timeLineHeight="46dp"
-        app:epg_nowLineColor="#FF0000"
-        app:epg_nowLineThickness="3dp"
         android:layout_below="@id/header"
-        app:epg_prevProgramsOverlayColor="#66000000"
-        app:epg_showPrevProgramsOverlay="true"/>
+        android:layout_marginTop="5dp">
+        <com.sgerges.epgview.core.EPGView
+            android:id="@+id/epg_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:epg_channelCellWidth="70dp"
+            app:epg_channelRowHeight="70dp"
+            app:epg_minuteWidth="6dp"
+            app:epg_timeLineHeight="46dp"
+            app:epg_nowLineColor="#FF0000"
+            app:epg_nowLineThickness="3dp"
+            app:epg_prevProgramsOverlayColor="#66000000"
+            app:epg_showPrevProgramsOverlay="true"/>
+    </FrameLayout>
 </RelativeLayout>

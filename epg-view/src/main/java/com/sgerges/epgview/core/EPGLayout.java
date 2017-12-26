@@ -17,10 +17,12 @@ package com.sgerges.epgview.core;
 
 import android.graphics.Rect;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,12 +54,12 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     @Override
     public void setAdapter(EPGAdapter adapter) {
-            itemsAdapter = adapter;
+        itemsAdapter = adapter;
     }
 
     @Override
     public void setLayoutParams(FreeFlowLayoutParams params) {
-        if(params instanceof EPGLayoutParams)
+        if (params instanceof EPGLayoutParams)
             this.layoutParams = (EPGLayoutParams) params;
         else
             throw new IllegalArgumentException("EPGLayout can only use EPGLayoutParams");
@@ -79,7 +81,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         long viewStartTime = itemsAdapter.getViewStartTime();
 
         //========== Now line & Now Head
-        if(viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
+        if (viewStartTime < System.currentTimeMillis() && System.currentTimeMillis() < itemsAdapter.getViewEndTime()) {
 
             FreeFlowItem nowLineItem = new FreeFlowItem();
             nowLineItem.frame = prepareNowLineFrame();
@@ -95,7 +97,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
             nowHeadItem.data = "NOW_HEAD";
             proxies.put("NOW_HEAD", nowHeadItem);
 
-            if(layoutParams.showPrevProgramsOverlay) {
+            if (layoutParams.showPrevProgramsOverlay) {
                 FreeFlowItem prevOverlayItem = new FreeFlowItem();
                 prevOverlayItem.frame = preparePrevOverlayFrame();
                 prevOverlayItem.type = TYPE_PREV_PROGRAMS_OVERLAY;
@@ -123,7 +125,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
             //Our cell should have the time Text in center
             // to achieve that, the full cell will be 15 min before, 15 min after
-            int timeDiffMin = (int) ((currentTime.getTimeInMillis() - viewStartTime)/DateUtils.MINUTE_IN_MILLIS) - 15;
+            int timeDiffMin = (int) ((currentTime.getTimeInMillis() - viewStartTime) / DateUtils.MINUTE_IN_MILLIS) - 15;
             Rect timeCellFrame = new Rect();
             timeCellFrame.left = programsStart + (timeDiffMin * layoutParams.minuteWidth);
             timeCellFrame.right = timeCellFrame.left + (30 * layoutParams.minuteWidth);//cell width is always 30 mins
@@ -243,7 +245,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         long programStartTime = itemsAdapter.getStartTimeForProgramAt(section, index);
         long viewStartTime = itemsAdapter.getViewStartTime();
 
-        if(programStartTime < viewStartTime) {
+        if (programStartTime < viewStartTime) {
             return 0;
         } else {
             return (int) (((programStartTime - viewStartTime) / DateUtils.MINUTE_IN_MILLIS) * layoutParams.minuteWidth);
@@ -256,7 +258,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         long viewStartTime = itemsAdapter.getViewStartTime();
         long viewEndTime = itemsAdapter.getViewEndTime();
 
-        if(programEnd > viewEndTime && layoutParams.cutProgramsToEdges) {
+        if (programEnd > viewEndTime && layoutParams.cutProgramsToEdges) {
             programEnd = viewEndTime;
         }
 
@@ -266,9 +268,9 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
     /**
      * This method it to decide which frames are going to be displayed.
      * <p>
-     *     That by comparing all cells frame with the current viewPort frame
-     *     If the cell frame is within the visible port, then display it.
-     *     Also it keep in minds the cell type and will it stick Hor/Ver
+     * That by comparing all cells frame with the current viewPort frame
+     * If the cell frame is within the visible port, then display it.
+     * Also it keep in minds the cell type and will it stick Hor/Ver
      * {@inheritDoc}
      */
     @Override
@@ -276,7 +278,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         HashMap<Object, FreeFlowItem> desc = new HashMap<>();
         for (FreeFlowItem fd : proxies.values()) {
 
-            if(fd.type == TYPE_CHANNEL) {
+            if (fd.type == TYPE_CHANNEL) {
                 //in case of channel cell only check visibility for Y index
                 //since in X index it will be always visible
                 if (fd.frame.bottom > viewPortTop && fd.frame.top < viewPortTop + height) {
@@ -286,16 +288,17 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 //                if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
 //                    desc.put(fd.data, fd);
 //                }
-            } else if(fd.type == TYPE_TIME_BAR_NOW_HEAD) {
+            } else if (fd.type == TYPE_TIME_BAR_NOW_HEAD) {
                 //in case of Time bar cell only check visibility for X index
                 //since in Y index it will be always visible on top
                 if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
                     desc.put(fd.data, fd);
                 }
-            } else if(fd.type == TYPE_TIME_BAR) {
+            } else if (fd.type == TYPE_TIME_BAR) {
                 //in case of Time bar cell only check visibility for X index
                 //since in Y index it will be always visible on top
                 if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
+                    Date itemTime = new Date((Long) fd.data);
                     desc.put(fd.data, fd);
                 }
             } else {
@@ -329,9 +332,10 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
 
     /**
      * The content width here represented by
-     *  Channel Column width + displayed duration
-     *  We calc display duration by adding getting this data from adapter, and detect how long is the duration (1 day or more)
-     *  then we multiply this duration to pixles for min
+     * Channel Column width + displayed duration
+     * We calc display duration by adding getting this data from adapter, and detect how long is the duration (1 day or more)
+     * then we multiply this duration to pixles for min
+     *
      * @return total width if the view
      */
     @Override
