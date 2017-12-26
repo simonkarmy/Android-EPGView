@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.core.AbsLayoutContainer;
 import com.sgerges.epgview.core.EPGAdapter;
 import com.sgerges.epgview.core.EPGView;
@@ -36,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
         LinkedHashMap<ChannelData, List<ProgramData>> epgData = MockDataProvider.prepareMockData();
 
         epgView = (EPGView) findViewById(R.id.epg_view);
-
-        DefaultLayoutAnimator anim = (DefaultLayoutAnimator) epgView.getLayoutAnimator();
-        anim.animateAllSetsSequentially = false;
-        anim.animateIndividualCellsSequentially = false;
 
         epgView.requestFocus();
 
