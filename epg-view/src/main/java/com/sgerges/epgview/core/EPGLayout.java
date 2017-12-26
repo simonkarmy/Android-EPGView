@@ -17,7 +17,6 @@ package com.sgerges.epgview.core;
 
 import android.graphics.Rect;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.sgerges.epgview.utils.ViewUtils;
 
