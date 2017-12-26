@@ -49,7 +49,7 @@ public abstract class EPGAdapter<C, P> {
     }
 
 
-    int getNumberOfChannels() {
+    public int getNumberOfChannels() {
         return sections.size();
     }
 
