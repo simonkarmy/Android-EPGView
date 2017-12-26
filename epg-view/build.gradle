@@ -4,7 +4,7 @@ apply plugin: 'com.android.library'
 //to generate new version
 //   1. Increase libraryVersion, versionCode, and versionName
 //   2. In Terminal execute this command ./gradlew install
-//   3. In Terminal execute this command ./gradlew install
+//   3. In Terminal execute this command ./gradlew bintrayUpload
 ext {
     bintrayRepo = 'android-libs'  // this is the same as whatever you called your repository in Bintray
     bintrayName = 'epg-view' // your bintray package name. I am calling it the same as my library name.
