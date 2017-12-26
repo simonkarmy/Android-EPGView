@@ -1983,7 +1983,7 @@ public class EPGView extends AbsLayoutContainer {
     public void scrollToNow(boolean animate) {
 
         FreeFlowItem nowLineFreeFlowItem = mLayout.getNowLineFreeFlowItem();
-        scrollToFreeFlowItem(nowLineFreeFlowItem, animate);
+        scrollToFreeFlowItem(nowLineFreeFlowItem, animate, true);
     }
 
     public void scrollToItem(int sectionIndex, int itemIndex, boolean animate) {
@@ -2001,17 +2001,17 @@ public class EPGView extends AbsLayoutContainer {
         FreeFlowItem freeflowItem = mLayout.getFreeFlowItemForItem(section.getDataAtIndex(itemIndex));
         freeflowItem = FreeFlowItem.clone(freeflowItem);
 
-        scrollToFreeFlowItem(freeflowItem, animate);
+        scrollToFreeFlowItem(freeflowItem, animate, false);
     }
 
-    private void scrollToFreeFlowItem(FreeFlowItem freeflowItem, boolean animate) {
+    private void scrollToFreeFlowItem(FreeFlowItem freeflowItem, boolean animate, boolean center) {
 
         if(freeflowItem == null) {
             return;
         }
 
-        int newVPX = freeflowItem.frame.left - getWidth()/2;
-        int newVPY = freeflowItem.frame.top;
+        int newVPX = freeflowItem.frame.left - (center ? getWidth()/2 : mLayout.getLayoutParams().channelCellWidth);
+        int newVPY = freeflowItem.frame.top - mLayout.getLayoutParams().timeLineHeight;
 
         if (newVPX > mLayout.getContentWidth() - getMeasuredWidth())
             newVPX = mLayout.getContentWidth() - getMeasuredWidth();
@@ -2019,8 +2019,12 @@ public class EPGView extends AbsLayoutContainer {
         if (newVPY > mLayout.getContentHeight() - getMeasuredHeight())
             newVPY = mLayout.getContentHeight() - getMeasuredHeight();
 
+        if(newVPY < 0) {
+            newVPY = 0;
+        }
+
         if (animate) {
-            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX), (newVPY - viewPortY), 1500);
+            scroller.startScroll(viewPortX, viewPortY, (newVPX - viewPortX), (newVPY - viewPortY), 1300);
             post(flingRunnable);
         } else {
             moveViewportBy((viewPortX - newVPX), (viewPortY - newVPY), false);

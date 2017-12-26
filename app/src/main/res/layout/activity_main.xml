@@ -7,11 +7,27 @@
     android:id="@+id/frameLayout"
     tools:context="com.sgerges.epgviewsample.MainActivity">
 
-    <View
+    <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#FF00FF00"/>
+        android:background="#FF00FF00"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/scroll_to_start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Go Start"
+            android:onClick="onScrollToStartClicked"/>
+        <Button
+            android:id="@+id/scroll_to_now_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="Go Now"
+            android:onClick="onScrollToNowClicked"/>
+    </LinearLayout>
     <com.sgerges.epgview.core.EPGView
         android:id="@+id/epg_view"
         android:layout_width="match_parent"

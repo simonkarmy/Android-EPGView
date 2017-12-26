@@ -26,6 +26,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EPGView epgView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinkedHashMap<ChannelData, List<ProgramData>> epgData = MockDataProvider.prepareMockData();
 
-        final EPGView epgView = (EPGView) findViewById(R.id.epg_view);
+        epgView = (EPGView) findViewById(R.id.epg_view);
 
         DefaultLayoutAnimator anim = (DefaultLayoutAnimator) epgView.getLayoutAnimator();
         anim.animateAllSetsSequentially = false;
@@ -71,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 1000);
 
+    }
+
+    public void onScrollToNowClicked(View view) {
+        epgView.scrollToNow(true);
+    }
+
+    public void onScrollToStartClicked(View view) {
+        epgView.scrollToItem(0,0,true);
     }
 
     private class EPGDataAdapter extends EPGAdapter<ChannelData, ProgramData> {
