@@ -73,7 +73,7 @@ public abstract class EPGAdapter<C, P> {
         return sections.get(section).getDataAtIndex(position);
     }
 
-    public C getChannelAt(int section, int position) {
+    public C getChannelAt(int section) {
         return sections.get(section).headerData;
     }
 
