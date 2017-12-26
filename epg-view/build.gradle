@@ -18,7 +18,7 @@ ext {
     siteUrl = 'https://github.com/simonkarmy/Android-EPGView'
     gitUrl = 'https://github.com/simonkarmy/Android-EPGView.git'
 
-    libraryVersion = '1.0.5'
+    libraryVersion = '1.0.6'
 
     developerId = 'simonkarmy' // Maven plugin uses this. I don't know if it needs to be anything special.
     developerName = 'Simon Karmy'
@@ -36,7 +36,7 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 5
+        versionCode 6
         versionName "${libraryVersion}"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

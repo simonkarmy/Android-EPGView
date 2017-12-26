@@ -270,6 +270,7 @@ public class EPGView extends AbsLayoutContainer {
                 post(new Runnable() {
                     @Override
                     public void run() {
+                        markLayoutDirty = true;
                         requestLayout();
                     }
                 });
@@ -318,9 +319,10 @@ public class EPGView extends AbsLayoutContainer {
         if (dataSetChanged) {
             dataSetChanged = false;
             for (FreeFlowItem item : frames.values()) {
-                if (item.itemIndex >= 0 && item.itemSection >= 0 && (item.type == EPGLayout.TYPE_CELL || item.type ==EPGLayout.TYPE_CHANNEL)) {
-                    mAdapter.getItemView(item.itemSection, item.itemIndex, item.view, this);
-                }
+//                if (item.itemIndex >= 0 && item.itemSection >= 0 && (item.type == EPGLayout.TYPE_CELL || item.type ==EPGLayout.TYPE_CHANNEL)) {
+//                    mAdapter.getItemView(item.itemSection, item.itemIndex, item.view, this);
+//                }
+                getProperViewFromAdapter(item, item.view);
             }
         }
 
@@ -438,30 +440,7 @@ public class EPGView extends AbsLayoutContainer {
 
                 View convertView = viewpool.getViewFromPool(freeflowItem.type);
 
-                if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
-                    view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
-                } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
-                    view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
-                } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
-                    view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
-                } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
-                    view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
-                } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
-                    view = mAdapter.getViewForNowLineHead(convertView, this);
-                    if(view.getLayoutParams().width != 0 && view.getLayoutParams().height != 0) {
-                        freeflowItem.frame.right = freeflowItem.frame.left + view.getLayoutParams().width;
-                        freeflowItem.frame.bottom = freeflowItem.frame.top + view.getLayoutParams().height;
-                        mLayout.forceUpdateFrame(freeflowItem.data, freeflowItem.frame);
-                    }
-                } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
-                    view = new View(getContext());
-                    view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
-                } else {
-                    view = new View(getContext());
-                }
-
-                if (view instanceof EPGView)
-                    throw new IllegalStateException("A container cannot be a direct child view to a container");
+                view = getProperViewFromAdapter(freeflowItem, convertView);
 
                 freeflowItem.view = view;
                 prepareViewForAddition(view, freeflowItem);
@@ -482,6 +461,36 @@ public class EPGView extends AbsLayoutContainer {
             //FIXME: Sometimes addView throws IllegalStateException: The specified child already has a parent. You must call removeView() on the child's parent first.
             throwable.printStackTrace();
         }
+    }
+
+    private View getProperViewFromAdapter(FreeFlowItem freeflowItem, View convertView) {
+        View view;
+        if (freeflowItem.type == EPGLayout.TYPE_CHANNEL) {
+            view = mAdapter.getHeaderViewForSection(freeflowItem.itemSection, convertView, this);
+        } else if(freeflowItem.type == EPGLayout.TYPE_CELL) {
+            view = mAdapter.getItemView(freeflowItem.itemSection, freeflowItem.itemIndex, convertView, this);
+        } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
+            view = mAdapter.getViewForTimeCell((Long)freeflowItem.data, convertView, this);
+        } else if(freeflowItem.type == EPGLayout.TYPE_PREV_PROGRAMS_OVERLAY) {
+            view = mAdapter.getOverlayViewForPrevPrograms(mLayout.getLayoutParams().prevProgramsOverlayColor, convertView, this);
+        } else if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR_NOW_HEAD) {
+            view = mAdapter.getViewForNowLineHead(convertView, this);
+            if(view.getLayoutParams().width != 0 && view.getLayoutParams().height != 0) {
+                freeflowItem.frame.right = freeflowItem.frame.left + view.getLayoutParams().width;
+                freeflowItem.frame.bottom = freeflowItem.frame.top + view.getLayoutParams().height;
+                mLayout.forceUpdateFrame(freeflowItem.data, freeflowItem.frame);
+            }
+        } else if(freeflowItem.type == EPGLayout.TYPE_NOW_LINE) {
+            view = new View(getContext());
+            view.setBackgroundColor(mLayout.getLayoutParams().nowLineColor);
+        } else {
+            view = new View(getContext());
+        }
+
+        if (view instanceof EPGView)
+            throw new IllegalStateException("A container cannot be a direct child view to a container");
+
+        return view;
     }
 
     private void mirrorArabicBackIfTextView(View parentView) {

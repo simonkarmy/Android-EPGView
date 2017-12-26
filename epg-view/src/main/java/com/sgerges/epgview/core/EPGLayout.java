@@ -229,7 +229,7 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
         Rect nowLineFrame = new Rect();
         nowLineFrame.top = 0;
         nowLineFrame.left = programsStart + detectNowLeft();
-        nowLineFrame.right = nowLineFrame.left + 100;
+        nowLineFrame.right = nowLineFrame.left + layoutParams.timeLineHeight;
         nowLineFrame.bottom = nowLineFrame.top + layoutParams.timeLineHeight;
         return nowLineFrame;
     }
