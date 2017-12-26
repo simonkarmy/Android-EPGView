@@ -23,7 +23,6 @@ import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.ViewCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -41,13 +40,12 @@ import android.widget.OverScroller;
 import android.widget.TextView;
 
 import com.sgerges.epgview.R;
-import com.sgerges.epgview.animations.DefaultLayoutAnimator;
 import com.sgerges.epgview.animations.FreeFlowLayoutAnimator;
+import com.sgerges.epgview.animations.NoAnimationLayoutAnimator;
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -168,7 +166,7 @@ public class EPGView extends AbsLayoutContainer {
      */
     int mChoiceMode = CHOICE_MODE_NONE;
 
-    private FreeFlowLayoutAnimator layoutAnimator = new DefaultLayoutAnimator();
+    private FreeFlowLayoutAnimator layoutAnimator = new NoAnimationLayoutAnimator();
 
     private FreeFlowItem beginTouchAt;
 
@@ -842,10 +840,6 @@ public class EPGView extends AbsLayoutContainer {
 
         for (FreeFlowItem freeflowItem : oldFrames.values()) {
             change.addToDeleted(freeflowItem);
-            if(freeflowItem.type == EPGLayout.TYPE_TIME_BAR) {
-                Date itemTime = new Date((Long) freeflowItem.data);
-                Log.d("ajshdashlf", "ijsfhalshfa;shf;hsd;fia");
-            }
         }
 
         frames = newFrames;

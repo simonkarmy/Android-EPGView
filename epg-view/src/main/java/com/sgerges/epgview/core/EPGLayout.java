@@ -21,7 +21,6 @@ import android.text.format.DateUtils;
 import com.sgerges.epgview.utils.ViewUtils;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -297,7 +296,6 @@ public class EPGLayout extends FreeFlowLayoutBase implements FreeFlowLayout {
                 //in case of Time bar cell only check visibility for X index
                 //since in Y index it will be always visible on top
                 if (fd.frame.right > viewPortLeft && fd.frame.left < viewPortLeft + width) {
-                    Date itemTime = new Date((Long) fd.data);
                     desc.put(fd.data, fd);
                 }
             } else {
