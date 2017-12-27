@@ -32,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LinkedHashMap<ChannelData, List<ProgramData>> epgData = MockDataProvider.prepareMockData();
-
-        epgView = (EPGView) findViewById(R.id.epg_view);
+        epgView = findViewById(R.id.epg_view);
 
         epgView.requestFocus();
 

@@ -41,7 +41,7 @@ public class MockDataProvider {
 
         LinkedHashMap<ChannelData, List<ProgramData>> data = new LinkedHashMap<>();
 
-        for (int channelIndex = 0; channelIndex < 80; channelIndex++) {
+        for (int channelIndex = 0; channelIndex < 4; channelIndex++) {
 
             ChannelData channelData = new ChannelData();
             channelData.setChannelName(channelStr + channelIndex);

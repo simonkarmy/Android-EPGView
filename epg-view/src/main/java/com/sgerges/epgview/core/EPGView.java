@@ -1196,6 +1196,10 @@ public class EPGView extends AbsLayoutContainer {
                 int maxX = mLayout.getContentWidth() - getWidth();
                 int maxY = mLayout.getContentHeight() - getHeight();
 
+                if (maxY < 0) {
+                    maxY = mLayout.getContentHeight();
+                }
+
                 int allowedScrollOffset;
                 if (mTouchMode == TOUCH_MODE_SCROLL) {
                     allowedScrollOffset = 0;
