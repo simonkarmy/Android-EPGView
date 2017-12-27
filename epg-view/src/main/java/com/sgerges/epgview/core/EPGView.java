@@ -1082,7 +1082,7 @@ public class EPGView extends AbsLayoutContainer {
                 (int) (event.getX()),
                 (int) (viewPortY + event.getY()));
 
-        if(screenEndTouchAt != null && screenEndTouchAt.zIndex > beginTouchAt.zIndex) {
+        if(screenEndTouchAt != null && (beginTouchAt == null || screenEndTouchAt.zIndex > beginTouchAt.zIndex)) {
             beginTouchAt = screenEndTouchAt;
         }
 
@@ -1263,7 +1263,7 @@ public class EPGView extends AbsLayoutContainer {
                     (int) (event.getX()),
                     (int) (viewPortY + event.getY()));
 
-            if(screenEndTouchAt != null && screenEndTouchAt.zIndex > endTouchAt.zIndex) {
+            if(screenEndTouchAt != null && (endTouchAt == null || screenEndTouchAt.zIndex > endTouchAt.zIndex)) {
                 endTouchAt = screenEndTouchAt;
             }
 
@@ -2026,7 +2026,7 @@ public class EPGView extends AbsLayoutContainer {
             return;
         }
 
-        if (itemIndex < 0 || itemIndex > section.getDataCount()) {
+        if (itemIndex < 0 || itemIndex >= section.getDataCount()) {
             return;
         }
 

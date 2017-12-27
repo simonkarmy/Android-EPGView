@@ -68,6 +68,12 @@ public class MockDataProvider {
             data.put(channelData, channelPrograms);
         }
 
+        ChannelData channelData = new ChannelData();
+        channelData.setChannelName(channelStr + 4);
+        channelData.setChannelNumber(4);
+
+        data.put(channelData, null);
+
         return data;
     }
 }
