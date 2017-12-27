@@ -36,6 +36,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.EdgeEffect;
+import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.TextView;
 
@@ -496,7 +497,7 @@ public class EPGView extends AbsLayoutContainer {
         if (parentView == null)
             return;
 
-        if(parentView instanceof TextView) {
+        if(parentView instanceof TextView || parentView instanceof ImageView) {
             parentView.setScaleX(-1f);
             return;
         }
