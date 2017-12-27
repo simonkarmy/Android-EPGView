@@ -340,6 +340,14 @@ public class EPGView extends AbsLayoutContainer {
         markLayoutDirty = true;
 
         requestLayout();
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+
+                moveViewportBy(2,2, false);
+            }
+        });
     }
 
     /**
