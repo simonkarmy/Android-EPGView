@@ -41,11 +41,16 @@ public class Section<C, P> {
 	}
 
 	public int getDataCount() {
-		return data.size();
+		if(data != null) {
+			return data.size();
+		} else {
+			return 0;
+		}
 	}
 
 	public void setData(List<P> data) {
-		this.data = data;
+		this.data.clear();
+		this.data.addAll(data);
 	}
 
 	public String getSectionTitle() {

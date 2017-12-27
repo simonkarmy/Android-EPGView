@@ -213,7 +213,7 @@ public class EPGView extends AbsLayoutContainer {
         maxFlingVelocity = configuration.getScaledMaximumFlingVelocity();
         minFlingVelocity = configuration.getScaledMinimumFlingVelocity();
         overFlingDistance = configuration.getScaledOverflingDistance();
-        touchSlop = 1; //TODO check this again
+        touchSlop = configuration.getScaledTouchSlop();
 
         scroller = new OverScroller(context);
 
@@ -1067,6 +1067,8 @@ public class EPGView extends AbsLayoutContainer {
                     }
                 }
             }, FLYWHEEL_TIMEOUT);
+        } else {
+            scroller.forceFinished(true);
         }
 
         beginTouchAt = ViewUtils.getItemAt(frames,
@@ -1214,7 +1216,7 @@ public class EPGView extends AbsLayoutContainer {
                 int maxY = mLayout.getContentHeight() - getHeight();
 
                 if (maxY < 0) {
-                    maxY = mLayout.getContentHeight();
+                    maxY = 0;
                 }
 
                 int allowedScrollOffset;
