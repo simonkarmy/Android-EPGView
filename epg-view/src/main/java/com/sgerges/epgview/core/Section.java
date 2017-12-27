@@ -48,9 +48,11 @@ public class Section<C, P> {
 		}
 	}
 
-	public void setData(List<P> data) {
-		this.data.clear();
-		this.data.addAll(data);
+	public void setData(List<P> newData) {
+	    if(newData != null) {
+            this.data.clear();
+            this.data.addAll(newData);
+        }
 	}
 
 	public String getSectionTitle() {
