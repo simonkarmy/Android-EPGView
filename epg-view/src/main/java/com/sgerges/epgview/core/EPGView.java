@@ -207,7 +207,6 @@ public class EPGView extends AbsLayoutContainer {
 
         viewpool = new ViewPool();
         frames = new HashMap<>();
-        isRTL = getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
 
         ViewConfiguration configuration = ViewConfiguration.get(context);
         maxFlingVelocity = configuration.getScaledMaximumFlingVelocity();
@@ -275,7 +274,7 @@ public class EPGView extends AbsLayoutContainer {
                         post(new Runnable() {
                             @Override
                             public void run() {
-                                moveViewportBy(2,2,false);
+                                moveViewportBy(2,0,false);
                             }
                         });
 
@@ -284,7 +283,13 @@ public class EPGView extends AbsLayoutContainer {
             }
         }, DateUtils.MINUTE_IN_MILLIS, DateUtils.MINUTE_IN_MILLIS);
 
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         //To mirror the screen in case of Arabic
+        isRTL = getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         setScaleX(isRTL ? -1f : 1f);
     }
 
@@ -353,7 +358,7 @@ public class EPGView extends AbsLayoutContainer {
             @Override
             public void run() {
 
-                moveViewportBy(2,2, false);
+                moveViewportBy(2,0, false);
             }
         });
     }
